@@ -1,18 +1,20 @@
 package org.example.gmup.core.service.User;
 
 import org.example.gmup.core.model.User;
-import org.example.gmup.core.model.dto.user.UserLoginDto;
+import org.example.gmup.core.model.dto.user.UserSignupDto;
 import org.example.gmup.mapper.UserMapper;
 import org.example.gmup.port.inbound.user.UserLoginUC;
 
-public class UserLoginServiceImpl implements UserLoginUC {
+public class UserSignupServiceImpl implements UserLoginUC {
 
     private UserMapper userMapper;
 
-    @Override
-    public void login(UserLoginDto userLoginDto) {
 
-       User user = userMapper.toModel(userLoginDto);
+
+    @Override
+    public void login(UserSignupDto userSignupDto) {
+
+       User user = userMapper.toModel(userSignupDto);
 
     }
 }

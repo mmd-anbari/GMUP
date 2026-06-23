@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.factory_core_manager.core.model.enumerated.UserType;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,9 +20,8 @@ public class User {
     private String username;
     private String password;
     private UserType userType;
+    private List<File> roles;
 
-    public boolean isValidPassword() {
-        return password != null && !password.isEmpty();
-    }
+
 
 }
