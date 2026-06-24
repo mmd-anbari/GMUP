@@ -1,4 +1,4 @@
-package org.example.gmup.adapter.outbound;
+package org.example.gmup.adapter.outbound.user;
 
 import org.springframework.stereotype.Repository;
 

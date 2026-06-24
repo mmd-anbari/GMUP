@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.factory_core_manager.core.model.enumerated.UserType;
 
+import java.util.List;
+
 @Entity
 @Table(name = "user_table")
 @Getter
@@ -22,6 +24,9 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     private UserType userType;
 
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<FileMetaDataEntity> userEntities;
 
 
 }

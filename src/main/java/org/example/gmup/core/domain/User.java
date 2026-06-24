@@ -1,7 +1,6 @@
-package org.example.gmup.core.model;
+package org.example.gmup.core.domain;
 
 
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
