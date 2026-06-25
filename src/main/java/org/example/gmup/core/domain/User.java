@@ -1,11 +1,12 @@
-package org.example.gmup.core.model;
+package org.example.gmup.core.domain;
 
 
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.factory_core_manager.core.model.enumerated.UserType;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,9 +19,8 @@ public class User {
     private String username;
     private String password;
     private UserType userType;
+    private List<Long> fileList;
 
-    public boolean isValidPassword() {
-        return password != null && !password.isEmpty();
-    }
+
 
 }

@@ -1,0 +1,47 @@
+package org.example.gmup.core.service.file;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.example.gmup.core.domain.File;
+import org.example.gmup.core.domain.FileMetaData;
+import org.example.gmup.core.dto.FileUploadCommand;
+import org.example.gmup.port.inbound.file.UploadFileUC;
+import org.example.gmup.port.outbound.file.CheckFileValidationsPort;
+import org.example.gmup.port.outbound.file.SaveFileMetaDataPort;
+import org.example.gmup.port.outbound.file.SaveFileStreamPort;
+
+@AllArgsConstructor
+@NoArgsConstructor
+public class UploadFileService implements UploadFileUC {
+
+    private CheckFileValidationsPort checkFileValidationsPort;
+    private SaveFileStreamPort saveFileStreamPort;
+    private SaveFileMetaDataPort saveFileMetaDataPort;
+
+
+    @Override
+    public boolean uploadFile(FileUploadCommand fileUploadCommand , Long userId) {
+
+        if(checkFileValidationsPort.isDuplicatedFileName(fileUploadCommand.originalFilename())){
+            return false;
+        }
+
+        String pathName = saveFileStreamPort.saveFileStream(
+                fileUploadCommand.originalFilename(),
+                userId,
+                fileUploadCommand.inputStream());
+
+        FileMetaData fileMetaData = new FileMetaData();
+        fileMetaData.setOriginalFilename(fileUploadCommand.originalFilename());
+        fileMetaData.setContentType(fileUploadCommand.contentType());
+        fileMetaData.setPath(pathName);
+
+
+        saveFileMetaDataPort.saveMetaData(fileMetaData , userId);
+
+
+
+        return true;
+    }
+
+}
