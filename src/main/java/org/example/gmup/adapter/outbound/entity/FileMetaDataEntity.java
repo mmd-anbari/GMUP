@@ -13,9 +13,9 @@ public class FileMetaDataEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id ;
-    private String name ;
+    private String originalFilename ;
+    private String contentType ;
     private String path ;
-    private String type ;
 
     @ManyToOne
     private UserEntity user ;

@@ -3,7 +3,6 @@ package org.example.gmup.core.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.example.gmup.core.domain.enumerated.FileMetaData;
 
 import java.io.InputStream;
 
@@ -12,6 +11,7 @@ import java.io.InputStream;
 @NoArgsConstructor
 public class File {
 
+    private Long userId ;
     private FileMetaData fileMetaData;
     private InputStream stream ;
 

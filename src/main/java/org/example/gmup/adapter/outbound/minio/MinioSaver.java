@@ -32,7 +32,7 @@ public class MinioSaver implements SaveFileStreamPort {
     }
 
     @Override
-    public void saveFileStream(String filename, Long userId, InputStream fileStream) {
+    public String saveFileStream(String filename, Long userId, InputStream fileStream) {
         String objectName = userId+"/"+filename;
         try {
             minioClient.putObject(
@@ -40,9 +40,12 @@ public class MinioSaver implements SaveFileStreamPort {
                     stream(fileStream,-1, 10485760).
                     bucket(bucketName).object(objectName).
                     build());
+            return objectName;
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        return null;
+
     }
 }

@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FileRepositoryJpa extends JpaRepository<FileMetaDataEntity, Long>{
-    boolean existsFileByName(String name);
+    boolean existsByOriginalFilename(String originalFilename);
 }

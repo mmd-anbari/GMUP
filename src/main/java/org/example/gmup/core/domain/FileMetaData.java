@@ -1,4 +1,4 @@
-package org.example.gmup.core.domain.enumerated;
+package org.example.gmup.core.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,8 +11,7 @@ import lombok.Setter;
 @Setter
 public class FileMetaData {
     private Long id ;
-    private Long userId ;
-    private String name ;
+    private String originalFilename ;
+    private String contentType ;
     private String path ;
-    private String type ;
 }

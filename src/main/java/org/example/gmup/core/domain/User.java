@@ -19,7 +19,7 @@ public class User {
     private String username;
     private String password;
     private UserType userType;
-    private List<File> roles;
+    private List<Long> fileList;
 
 
 

@@ -1,16 +1,18 @@
 package org.example.gmup.adapter.inbound;
 
-import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import org.example.gmup.core.domain.File;
+import org.example.gmup.core.domain.User;
+import org.example.gmup.core.domain.FileMetaData;
+import org.example.gmup.core.dto.FileUploadCommand;
 import org.example.gmup.mapper.FileMapper;
 import org.example.gmup.port.inbound.file.UploadFileUC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController("/fileManager")
 public class FileManagementAdapter {
@@ -26,17 +28,21 @@ public class FileManagementAdapter {
 
     //TODO amortize File object into fileMetaData and stream when i use mapping .
     @PostMapping("/file")
-    public void uploadFile(@RequestParam("file") MultipartFile fileToUpload) {
+    public void uploadFile(@RequestParam("file") MultipartFile fileToUpload) throws IOException {
 
-        File file = fileMapper.toDomainFromMultipartFile(fileToUpload);
-        file.getFileMetaData().setUserId(1L);
-        boolean isUploaded = uploadFileUC.uploadFile(file);
+        FileUploadCommand fileUploadCommand= new FileUploadCommand(
+                fileToUpload.getOriginalFilename(),
+                fileToUpload.getContentType(),
+                fileToUpload.getInputStream()
+        );
 
-        if (isUploaded) {
-            System.out.println("Uploaded File");
-        } else {
-            System.out.println("Not Uploaded");
+        Long userId = 1L ;
+        boolean b = uploadFileUC.uploadFile(fileUploadCommand , userId);
+        if (b)
+            System.out.println("Upload file successful");
+        else {
+            System.out.println("Upload file failed");
         }
-    }
 
+    }
 }
