@@ -4,17 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.io.InputStream;
+import okio.FileMetadata;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class File {
+@NoArgsConstructor
+public class FileDownloadWithToken {
 
-    private Long userId ;
-    private FileMetaData fileMetaData;
-    private InputStream stream ;
+    private FileMetaData fileMetadata;
+    private String token ;
 
 }

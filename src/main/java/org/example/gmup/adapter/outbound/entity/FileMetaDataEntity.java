@@ -17,6 +17,6 @@ public class FileMetaDataEntity {
     private String contentType ;
     private String path ;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity user ;
 }

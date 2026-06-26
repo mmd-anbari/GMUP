@@ -1,5 +1,6 @@
 package org.example.gmup.mapper;
 
+import org.example.gmup.adapter.inbound.dto.file.FileMenu;
 import org.example.gmup.adapter.outbound.entity.FileMetaDataEntity;
 import org.example.gmup.core.domain.File;
 import org.example.gmup.core.domain.FileMetaData;
@@ -16,6 +17,7 @@ public interface FileMapper {
     File toDomain(FileMetaDataEntity fileMetaDataEntity);
     File toDomainFromMultipartFile(MultipartFile multipartFile);
     FileMetaData fromMultipartFileToFileMetaData(MultipartFile multipartFile);
+    FileMenu fromFileToFileMenu(File file);
 
 
 }
