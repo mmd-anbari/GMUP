@@ -40,6 +40,7 @@ public class GetFileService implements GetFileUC {
     }
 
 
+    //TODO add cacheable for the part of saving token for each file in reddis!
     @Override
     public List<FileDownloadWithToken> getFilesMetaDataWithToken(Long userId) {
         return List.of();
