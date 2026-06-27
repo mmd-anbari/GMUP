@@ -1,4 +1,5 @@
 package org.example.gmup.adapter.outbound.file;
+
 import org.example.gmup.adapter.outbound.entity.FileMetaDataEntity;
 import org.example.gmup.adapter.outbound.jpa.FileMetaDataRepositoryJpa;
 import org.example.gmup.core.domain.FileMetaData;
@@ -18,30 +19,23 @@ public class GetFileMetaDataAdapter implements GetFileMetaDataPort {
 
 
     @Autowired
-    public GetFileMetaDataAdapter(FileMetaDataRepositoryJpa fileMetaDataRepositoryJpa , FileMapper fileMapper) {
+    public GetFileMetaDataAdapter(FileMetaDataRepositoryJpa fileMetaDataRepositoryJpa, FileMapper fileMapper) {
         this.fileMetaDataRepositoryJpa = fileMetaDataRepositoryJpa;
         this.fileMapper = fileMapper;
     }
 
     @Override
-    public FileMetaData getFileMetaData(String filename , Long userId) {
+    public Optional<FileMetaData> getFileMetaData(String filename, Long userId) {
         Optional<FileMetaDataEntity> fileMetaDataEntity =
-                fileMetaDataRepositoryJpa.findFileMetaDataEntityByFileNameAndUser_Id(filename,userId);
-        if(fileMetaDataEntity.isEmpty())
-            return null;
+                fileMetaDataRepositoryJpa.findFileMetaDataEntityByFileNameAndUser_Id(filename, userId);
 
-        FileMetaDataEntity realFileMetaDataEntity = fileMetaDataEntity.get();
-
-        return fileMapper.toDomain(realFileMetaDataEntity);
+        return fileMetaDataEntity.map(fileMapper::toDomain);
 
     }
 
     @Override
-    public FileMetaData getFileMetaData(String shortCode) {
+    public Optional<FileMetaData> getFileMetaData(String shortCode) {
         Optional<FileMetaDataEntity> fileMetaDataEntity = fileMetaDataRepositoryJpa.getFileMetaDataEntityByShortCode(shortCode);
-        if(fileMetaDataEntity.isEmpty())
-            return null;
-        FileMetaDataEntity realFileMetaDataEntity = fileMetaDataEntity.get();
-        return fileMapper.toDomain(realFileMetaDataEntity);
+        return fileMetaDataEntity.map(fileMapper::toDomain);
     }
 }

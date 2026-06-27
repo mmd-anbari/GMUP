@@ -1,15 +1,6 @@
 package org.example.gmup.adapter.inbound;
-
-import org.example.gmup.adapter.inbound.dto.file.FileExternalMetaData;
 import org.example.gmup.adapter.inbound.dto.file.FileMenu;
-import org.example.gmup.adapter.inbound.exception.StorageProblemException;
-import org.example.gmup.core.domain.File;
 import org.example.gmup.core.domain.FileDownloadWithToken;
-import org.example.gmup.core.domain.User;
-import org.example.gmup.core.domain.FileMetaData;
-import org.example.gmup.core.domain.exception.FIleNotExistsException;
-import org.example.gmup.core.domain.exception.FileDownloadAccessDeniedException;
-import org.example.gmup.core.dto.FileMenuCommand;
 import org.example.gmup.core.dto.FileUploadCommand;
 import org.example.gmup.mapper.FileMapper;
 import org.example.gmup.port.inbound.file.GetFileUC;
@@ -20,10 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
 
 @RestController
 @RequestMapping("/fileManager")

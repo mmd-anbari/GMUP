@@ -1,6 +1,7 @@
 package org.example.gmup.core.domain;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,8 +12,15 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
+    public User(String firstname, String lastname, String username, String password) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.username = username;
+        this.password = password;
+    }
     private Long id ;
     private String firstname;
     private String lastname;

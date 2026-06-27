@@ -4,11 +4,12 @@ import org.example.gmup.core.domain.File;
 import org.example.gmup.core.domain.FileMetaData;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface GetFileMetaDataPort {
 
-    FileMetaData getFileMetaData(String filename , Long userId);
+    Optional<FileMetaData> getFileMetaData(String filename, Long userId);
 
-    FileMetaData getFileMetaData(String shortCode);
+    Optional<FileMetaData> getFileMetaData(String shortCode);
 
 }

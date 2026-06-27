@@ -14,6 +14,7 @@ import org.example.gmup.port.outbound.file.GetFilePresidedUrlPort;
 import org.example.gmup.port.outbound.file.UpdateFileMetaDataAfterDownloadPort;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Getter
@@ -30,12 +31,12 @@ public class GetFileService implements GetFileUC {
 
     @Override
     public FileDownloadWithToken getFileMetaDataWithToken(String fileName , Long userId) {
-        FileMetaData fileMetaData = getFileMetaDataPort.getFileMetaData(fileName, userId);
-        if (fileMetaData == null)
+        Optional<FileMetaData> fileMetaData = getFileMetaDataPort.getFileMetaData(fileName, userId);
+        if (fileMetaData.isEmpty())
             throw new FIleNotExistsException("file meta data not found by filename : " + fileName + "//from GetFileService/getFileMetaDataWithToken ");
-        String token = getFilePresidedUrlPort.getFilePresidedUrl(fileMetaData);
-        updateFileMetaDataAfterDownloadPort.increaseDownloadCount(fileMetaData);
-        return new FileDownloadWithToken(fileMetaData , token);
+        String token = getFilePresidedUrlPort.getFilePresidedUrl(fileMetaData.get());
+        updateFileMetaDataAfterDownloadPort.increaseDownloadCount(fileMetaData.get());
+        return new FileDownloadWithToken(fileMetaData.get() , token);
     }
 
 
@@ -47,14 +48,14 @@ public class GetFileService implements GetFileUC {
 
     @Override
     public FileDownloadWithToken getFileMetaDataWithToken(String shortCode) {
-        FileMetaData fileMetaData = getFileMetaDataPort.getFileMetaData(shortCode);
-        if(fileMetaData == null)
+        Optional<FileMetaData> fileMetaData = getFileMetaDataPort.getFileMetaData(shortCode);
+        if(fileMetaData.isEmpty())
             throw new FIleNotExistsException("file meta data not found by shortCode : " + shortCode + "//from GetFileService/getFileMetaDataWithToken ");
 
-        if(!fileMetaData.isPublic())
+        if(!fileMetaData.get().isPublic())
             throw new FileDownloadAccessDeniedException("this file is not public for download with shortCode : " + shortCode + "//from GetFileService/getFileMetaDataWithToken ");
-        String token = getFilePresidedUrlPort.getFilePresidedUrl(fileMetaData);
-        return new FileDownloadWithToken(fileMetaData , token);
+        String token = getFilePresidedUrlPort.getFilePresidedUrl(fileMetaData.get());
+        return new FileDownloadWithToken(fileMetaData.get() , token);
 
     }
 
