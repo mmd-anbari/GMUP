@@ -17,8 +17,8 @@ public class InboundPortConfig {
         return new UploadFileService(checkFileValidationsPort , saveFileStreamPort , saveFileMetaDataPort);
     }
     @Bean
-    public GetFileUC getFileUC(GetFileMetaDataPort getFileMetaDataPort , GetFilePresidedUrlPort getFilePresidedUrlPort) {
-        return new GetFileService(getFileMetaDataPort , getFilePresidedUrlPort);
+    public GetFileUC getFileUC(GetFileMetaDataPort getFileMetaDataPort , GetFilePresidedUrlPort getFilePresidedUrlPort , UpdateFileMetaDataAfterDownloadPort updateFileMetaDataAfterDownloadPort) {
+        return new GetFileService(getFileMetaDataPort , getFilePresidedUrlPort , updateFileMetaDataAfterDownloadPort);
     }
 
 }

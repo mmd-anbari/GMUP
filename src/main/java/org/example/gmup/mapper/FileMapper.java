@@ -14,7 +14,7 @@ public interface FileMapper {
 
     @Mapping(target = "id"  , ignore = true)
     FileMetaDataEntity toEntity(FileMetaData fileMetaData);
-    File toDomain(FileMetaDataEntity fileMetaDataEntity);
+    FileMetaData toDomain(FileMetaDataEntity fileMetaDataEntity);
     File toDomainFromMultipartFile(MultipartFile multipartFile);
     FileMetaData fromMultipartFileToFileMetaData(MultipartFile multipartFile);
     FileMenu fromFileToFileMenu(File file);

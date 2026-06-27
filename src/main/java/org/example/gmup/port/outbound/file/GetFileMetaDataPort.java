@@ -9,4 +9,6 @@ public interface GetFileMetaDataPort {
 
     FileMetaData getFileMetaData(String filename , Long userId);
 
+    FileMetaData getFileMetaData(String shortCode);
+
 }

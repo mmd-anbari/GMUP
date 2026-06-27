@@ -14,6 +14,8 @@ public interface GetFileUC {
 
     List<FileDownloadWithToken> getFilesMetaDataWithToken(Long userId);
 
+    FileDownloadWithToken getFileMetaDataWithToken(String shortCode);
+
 
 
 

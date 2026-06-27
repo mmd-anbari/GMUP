@@ -10,6 +10,8 @@ import org.example.gmup.port.outbound.file.CheckFileValidationsPort;
 import org.example.gmup.port.outbound.file.SaveFileMetaDataPort;
 import org.example.gmup.port.outbound.file.SaveFileStreamPort;
 
+import java.time.LocalDateTime;
+
 @AllArgsConstructor
 @NoArgsConstructor
 public class UploadFileService implements UploadFileUC {
@@ -35,6 +37,9 @@ public class UploadFileService implements UploadFileUC {
         fileMetaData.setOriginalFilename(fileUploadCommand.originalFilename());
         fileMetaData.setContentType(fileUploadCommand.contentType());
         fileMetaData.setPath(pathName);
+        fileMetaData.setPublic(fileUploadCommand.isPublic());
+        fileMetaData.setShortCode(ShortCodeGenerator.getShortCode());
+        fileMetaData.setCreatedAt(LocalDateTime.now());
 
 
         saveFileMetaDataPort.saveMetaData(fileMetaData , userId);

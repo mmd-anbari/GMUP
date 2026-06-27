@@ -56,4 +56,7 @@ public class GetFileTokenMinioAdapter implements GetFilePresidedUrlPort {
             throw new FIleNotExistsException("file with path " + fileMetaData.getPath() + " not found!//from GetFileStreamMinioAdapter");
         }
     }
+
+
+
 }
