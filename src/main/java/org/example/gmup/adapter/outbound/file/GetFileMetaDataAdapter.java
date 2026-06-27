@@ -26,7 +26,7 @@ public class GetFileMetaDataAdapter implements GetFileMetaDataPort {
     @Override
     public FileMetaData getFileMetaData(String filename , Long userId) {
         Optional<FileMetaDataEntity> fileMetaDataEntity =
-                fileMetaDataRepositoryJpa.findFileMetaDataEntityByOriginalFilenameAndUser_Id(filename,userId);
+                fileMetaDataRepositoryJpa.findFileMetaDataEntityByFileNameAndUser_Id(filename,userId);
         if(fileMetaDataEntity.isEmpty())
             return null;
 

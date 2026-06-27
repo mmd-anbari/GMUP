@@ -18,7 +18,6 @@ public class User {
     private String lastname;
     private String username;
     private String password;
-    private UserType userType;
     private List<Long> fileList;
 
 

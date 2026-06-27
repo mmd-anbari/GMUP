@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 public class FileMetaData {
     private Long id ;
+    private String fileName ;
     private String originalFilename ;
     private String contentType ;
     private String shortCode ;

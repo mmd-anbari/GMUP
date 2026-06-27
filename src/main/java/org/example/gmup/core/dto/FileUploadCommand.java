@@ -8,6 +8,7 @@ import java.io.InputStream;
 
 public record FileUploadCommand(
         String originalFilename,
+        String fileName,
         String contentType,
         InputStream inputStream,
         boolean isPublic

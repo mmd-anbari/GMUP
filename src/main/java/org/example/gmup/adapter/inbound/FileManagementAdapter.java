@@ -41,12 +41,14 @@ public class FileManagementAdapter {
     }
 
 
-    @PostMapping(value = "/file/{isPublic}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/files", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void uploadFile(@RequestParam("file") MultipartFile fileToUpload ,
-                           @RequestParam boolean isPublic) throws IOException {
+                           @RequestParam boolean isPublic,
+                           @RequestParam String fileName) throws IOException {
 
         FileUploadCommand fileUploadCommand = new FileUploadCommand(
                 fileToUpload.getOriginalFilename(),
+                fileName,
                 fileToUpload.getContentType(),
                 fileToUpload.getInputStream(),
                 isPublic
@@ -63,25 +65,23 @@ public class FileManagementAdapter {
     }
 
     //special for the authenticated user !
-    @GetMapping("/file/info")
+    @GetMapping("/files/infos")
     public ResponseEntity<FileMenu> getFileMetaData(@RequestParam("fileName") String fileName) {
         Long userId = 1L;
 
             FileDownloadWithToken fileDownloadWithToken = getFileUC.getFileMetaDataWithToken(fileName , userId);
-            FileMenu fileMenu = new FileMenu(fileDownloadWithToken.getFileMetadata().getOriginalFilename(),
-                    fileDownloadWithToken.getFileMetadata().getContentType() , fileDownloadWithToken.getToken());
+            FileMenu fileMenu = fileMapper.fromFileWithDownloadTokenToFileMenu(fileDownloadWithToken);
             return new ResponseEntity<>(fileMenu, HttpStatus.OK);
 
 
     }
 
-    @GetMapping("/file")
+    @GetMapping("/files")
     public ResponseEntity<FileMenu> getFileMetaDataByShortCode(@RequestParam("shortCode") String shortCode) {
 
 
             FileDownloadWithToken fileDownloadWithToken = getFileUC.getFileMetaDataWithToken(shortCode);
-            FileMenu fileMenu = new FileMenu(fileDownloadWithToken.getFileMetadata().getOriginalFilename(),
-                    fileDownloadWithToken.getFileMetadata().getContentType() , fileDownloadWithToken.getToken());
+            FileMenu fileMenu = fileMapper.fromFileWithDownloadTokenToFileMenu(fileDownloadWithToken);
             return new ResponseEntity<FileMenu>(fileMenu, HttpStatus.OK);
 
     }

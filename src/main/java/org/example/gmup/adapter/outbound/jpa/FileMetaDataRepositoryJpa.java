@@ -18,6 +18,8 @@ public interface FileMetaDataRepositoryJpa extends JpaRepository<FileMetaDataEnt
 
     Optional<FileMetaDataEntity> findFileMetaDataEntityByOriginalFilenameAndUser_Id(String originalFilename, Long userId);
 
+    Optional<FileMetaDataEntity> findFileMetaDataEntityByFileNameAndUser_Id(String fileName, Long userId);
+
     @Modifying
     @Transactional
     @Query("UPDATE FileMetaDataEntity f SET f.downloadCount = f.downloadCount + 1 WHERE f.id = :id")

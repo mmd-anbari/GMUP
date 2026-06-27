@@ -21,8 +21,6 @@ public class UserEntity {
     private String lastname;
     private String username;
     private String password;
-    @Enumerated(EnumType.STRING)
-    private UserType userType;
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

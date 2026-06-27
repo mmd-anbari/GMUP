@@ -9,6 +9,7 @@ import org.example.gmup.port.inbound.file.UploadFileUC;
 import org.example.gmup.port.outbound.file.CheckFileValidationsPort;
 import org.example.gmup.port.outbound.file.SaveFileMetaDataPort;
 import org.example.gmup.port.outbound.file.SaveFileStreamPort;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 
@@ -33,12 +34,8 @@ public class UploadFileService implements UploadFileUC {
                 userId,
                 fileUploadCommand.inputStream());
 
-        FileMetaData fileMetaData = new FileMetaData();
-        fileMetaData.setOriginalFilename(fileUploadCommand.originalFilename());
-        fileMetaData.setContentType(fileUploadCommand.contentType());
+        FileMetaData fileMetaData = extractFileMetaData(fileUploadCommand);
         fileMetaData.setPath(pathName);
-        fileMetaData.setPublic(fileUploadCommand.isPublic());
-        fileMetaData.setShortCode(ShortCodeGenerator.getShortCode());
         fileMetaData.setCreatedAt(LocalDateTime.now());
 
 
@@ -47,6 +44,16 @@ public class UploadFileService implements UploadFileUC {
 
 
         return true;
+    }
+
+    private static FileMetaData extractFileMetaData(FileUploadCommand fileUploadCommand) {
+        FileMetaData fileMetaData = new FileMetaData();
+        fileMetaData.setOriginalFilename(fileUploadCommand.originalFilename());
+        fileMetaData.setContentType(fileUploadCommand.contentType());
+        fileMetaData.setFileName(fileUploadCommand.fileName());
+        fileMetaData.setPublic(fileUploadCommand.isPublic());
+        fileMetaData.setShortCode(ShortCodeGenerator.getShortCode());
+        return fileMetaData;
     }
 
 }
