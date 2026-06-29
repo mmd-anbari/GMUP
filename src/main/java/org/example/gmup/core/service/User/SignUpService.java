@@ -8,6 +8,7 @@ import org.example.gmup.core.domain.User;
 import org.example.gmup.core.domain.exception.UserNameAlreadyExistsException;
 import org.example.gmup.core.dto.SaveNewUserCommand;
 import org.example.gmup.port.inbound.user.SignUpUC;
+import org.example.gmup.port.outbound.user.PasswordEncoderPort;
 import org.example.gmup.port.outbound.user.UserInformationPort;
 import org.example.gmup.port.outbound.user.UserSignUpPort;
 
@@ -21,6 +22,7 @@ public class SignUpService implements SignUpUC {
 
     private UserSignUpPort userSignUpPort;
     private UserInformationPort userInformationPort;
+    private PasswordEncoderPort passwordEncoderPort;
 
 
     @Override
@@ -28,7 +30,8 @@ public class SignUpService implements SignUpUC {
         if(userInformationPort.userNameExists(command.username())){
             throw new UserNameAlreadyExistsException("username by "+ command.username()+ " already exists");
         }
-        User user = new User(command.firstname() , command.lastname(), command.username(), command.password());
+        String encodedPassword = passwordEncoderPort.encode(command.password());
+        User user = new User(command.firstname() , command.lastname(), command.username(),encodedPassword);
         userSignUpPort.signUp(user);
     }
 }

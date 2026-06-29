@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class UserRepositoryAdapter implements UserSignUpPort , UserInformationPort {
+public class UserRepositoryAdapter implements UserSignUpPort , UserInformationPort  {
 
     private final UserRepositoryJpa userRepositoryJpa;
     private final UserMapper userMapper;
@@ -37,4 +37,9 @@ public class UserRepositoryAdapter implements UserSignUpPort , UserInformationPo
     public boolean userNameExists(String userName) {
         return userRepositoryJpa.existsByUsername(userName);
     }
+
+    public Optional<UserEntity> loadUserByUsername(String username) {
+        return userRepositoryJpa.findUserEntityByUsername(username);
+    }
+
 }

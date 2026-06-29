@@ -4,6 +4,6 @@ import org.example.gmup.core.dto.SaveNewUserCommand;
 
 public interface SignUpUC  {
 
-    public void signUp(SaveNewUserCommand command);
+     void signUp(SaveNewUserCommand command);
 
 }

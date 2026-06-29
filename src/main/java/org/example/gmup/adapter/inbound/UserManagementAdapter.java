@@ -27,6 +27,7 @@ public class UserManagementAdapter {
     @PostMapping("/signUp")
     public ResponseEntity<String> signUp(@RequestBody SaveNewUserCommand saveNewUserCommand) {
 
+        System.out.println("dsljnsdfkjlsdfjbvsljkdbvlzxdjkbvjhzsdbvcjfbvhu");
         signUpUC.signUp(saveNewUserCommand);
 
         return ResponseEntity.ok("Sign up successful");
