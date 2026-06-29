@@ -2,7 +2,7 @@ package org.example.gmup.adapter.outbound.file;
 
 import org.example.gmup.adapter.outbound.entity.FileMetaDataEntity;
 import org.example.gmup.adapter.outbound.entity.UserEntity;
-import org.example.gmup.adapter.outbound.jpa.FileRepositoryJpa;
+import org.example.gmup.adapter.outbound.jpa.FileMetaDataRepositoryJpa;
 import org.example.gmup.adapter.outbound.jpa.UserRepositoryJpa;
 import org.example.gmup.core.domain.FileMetaData;
 import org.example.gmup.mapper.FileMapper;
@@ -15,19 +15,19 @@ import org.springframework.stereotype.Repository;
 public class UploadFileMetaDataAdapter implements CheckFileValidationsPort, SaveFileMetaDataPort {
 
     private UserRepositoryJpa userRepositoryJpa;
-    private FileRepositoryJpa fileRepositoryJpa;
+    private FileMetaDataRepositoryJpa fileMetaDataRepositoryJpa;
     private FileMapper fileMapper;
 
     @Autowired
-    public UploadFileMetaDataAdapter(FileRepositoryJpa fileRepositoryJpa, UserRepositoryJpa userRepositoryJpa, FileMapper fileMapper) {
-        this.fileRepositoryJpa = fileRepositoryJpa;
+    public UploadFileMetaDataAdapter(FileMetaDataRepositoryJpa fileMetaDataRepositoryJpa, UserRepositoryJpa userRepositoryJpa, FileMapper fileMapper) {
+        this.fileMetaDataRepositoryJpa = fileMetaDataRepositoryJpa;
         this.userRepositoryJpa = userRepositoryJpa;
         this.fileMapper = fileMapper;
     }
 
     @Override
     public boolean isDuplicatedFileName(String fileName) {
-        return fileRepositoryJpa.existsByOriginalFilename(fileName);
+        return fileMetaDataRepositoryJpa.existsByOriginalFilename(fileName);
     }
 
     @Override
@@ -36,6 +36,6 @@ public class UploadFileMetaDataAdapter implements CheckFileValidationsPort, Save
         FileMetaDataEntity fileMetaDataEntity = fileMapper.toEntity(fileMetaData);
         fileMetaDataEntity.setUser(referenceById);
 
-        fileRepositoryJpa.save(fileMetaDataEntity);
+        fileMetaDataRepositoryJpa.save(fileMetaDataEntity);
     }
 }
