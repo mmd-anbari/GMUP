@@ -7,6 +7,7 @@ import org.example.gmup.port.inbound.file.GetFileUC;
 import org.example.gmup.port.inbound.file.UploadFileUC;
 import org.example.gmup.port.inbound.user.SignUpUC;
 import org.example.gmup.port.outbound.file.*;
+import org.example.gmup.port.outbound.user.PasswordEncoderPort;
 import org.example.gmup.port.outbound.user.UserInformationPort;
 import org.example.gmup.port.outbound.user.UserSignUpPort;
 import org.springframework.context.annotation.Bean;
@@ -17,17 +18,27 @@ public class InboundPortConfig {
 
 
     @Bean
-    public UploadFileUC uploadFile(CheckFileValidationsPort checkFileValidationsPort , SaveFileStreamPort saveFileStreamPort , SaveFileMetaDataPort saveFileMetaDataPort) {
-        return new UploadFileService(checkFileValidationsPort , saveFileStreamPort , saveFileMetaDataPort);
+    public UploadFileUC uploadFile(CheckFileValidationsPort checkFileValidationsPort,
+                                   SaveFileStreamPort saveFileStreamPort,
+                                   SaveFileMetaDataPort saveFileMetaDataPort,
+                                   UserInformationPort userInformationPort) {
+
+        return new UploadFileService(checkFileValidationsPort, saveFileStreamPort, saveFileMetaDataPort, userInformationPort);
     }
+
+
     @Bean
-    public GetFileUC getFileUC(GetFileMetaDataPort getFileMetaDataPort , GetFilePresidedUrlPort getFilePresidedUrlPort , UpdateFileMetaDataAfterDownloadPort updateFileMetaDataAfterDownloadPort) {
-        return new GetFileService(getFileMetaDataPort , getFilePresidedUrlPort , updateFileMetaDataAfterDownloadPort);
+    public GetFileUC getFileUC(GetFileMetaDataPort getFileMetaDataPort,
+                               GetFilePresidedUrlPort getFilePresidedUrlPort,
+                               UpdateFileMetaDataAfterDownloadPort updateFileMetaDataAfterDownloadPort,
+                               UserInformationPort userInformationPort) {
+
+        return new GetFileService(getFileMetaDataPort, getFilePresidedUrlPort, updateFileMetaDataAfterDownloadPort, userInformationPort);
     }
 
     @Bean
-    public SignUpUC signUpUC(UserSignUpPort userSignUpPort , UserInformationPort userInformationPort) {
-        return new SignUpService(userSignUpPort , userInformationPort);
+    public SignUpUC signUpUC(UserSignUpPort userSignUpPort, UserInformationPort userInformationPort , PasswordEncoderPort passwordEncoderPort) {
+        return new SignUpService(userSignUpPort, userInformationPort, passwordEncoderPort);
     }
 
 }

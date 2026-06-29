@@ -4,12 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.example.gmup.core.domain.File;
 import org.example.gmup.core.domain.FileMetaData;
+import org.example.gmup.core.domain.User;
 import org.example.gmup.core.dto.FileUploadCommand;
 import org.example.gmup.port.inbound.file.UploadFileUC;
 import org.example.gmup.port.outbound.file.CheckFileValidationsPort;
 import org.example.gmup.port.outbound.file.SaveFileMetaDataPort;
 import org.example.gmup.port.outbound.file.SaveFileStreamPort;
+import org.example.gmup.port.outbound.user.UserInformationPort;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.time.LocalDateTime;
 
@@ -20,10 +23,17 @@ public class UploadFileService implements UploadFileUC {
     private CheckFileValidationsPort checkFileValidationsPort;
     private SaveFileStreamPort saveFileStreamPort;
     private SaveFileMetaDataPort saveFileMetaDataPort;
+    private UserInformationPort userInformationPort;
 
 
     @Override
-    public boolean uploadFile(FileUploadCommand fileUploadCommand , Long userId) {
+    public boolean uploadFile(FileUploadCommand fileUploadCommand , String username) {
+
+        User user = userInformationPort.getUserInformation(username).orElseThrow(
+                ()-> new UsernameNotFoundException("user by username " + username + " not found! // from UploadFileService/uploadFile")
+        );
+
+        Long userId = user.getId();
 
         if(checkFileValidationsPort.isDuplicatedFileName(fileUploadCommand.originalFilename())){
             return false;

@@ -9,6 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -42,8 +47,9 @@ public class FileManagementAdapter {
                 isPublic
         );
 
-        Long userId = 1L;
-        boolean b = uploadFileUC.uploadFile(fileUploadCommand, userId);
+        UserDetails userDetails =(UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = userDetails.getUsername();
+        boolean b = uploadFileUC.uploadFile(fileUploadCommand, username);
         if (b)
             System.out.println("Upload file successful");
         else {
@@ -55,9 +61,11 @@ public class FileManagementAdapter {
     //special for the authenticated user !
     @GetMapping("/files/infos")
     public ResponseEntity<FileMenu> getFileMetaData(@RequestParam("fileName") String fileName) {
-        Long userId = 1L;
 
-            FileDownloadWithToken fileDownloadWithToken = getFileUC.getFileMetaDataWithToken(fileName , userId);
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = userDetails.getUsername();
+
+            FileDownloadWithToken fileDownloadWithToken = getFileUC.getFileMetaDataWithToken(fileName ,username);
             FileMenu fileMenu = fileMapper.fromFileWithDownloadTokenToFileMenu(fileDownloadWithToken);
             return new ResponseEntity<>(fileMenu, HttpStatus.OK);
 

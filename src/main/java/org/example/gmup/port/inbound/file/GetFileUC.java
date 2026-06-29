@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface GetFileUC {
 
-    FileDownloadWithToken getFileMetaDataWithToken(String fileName, Long userId);
+    FileDownloadWithToken getFileMetaDataWithToken(String fileName,String username);
 
     List<FileDownloadWithToken> getFilesMetaDataWithToken(Long userId);
 

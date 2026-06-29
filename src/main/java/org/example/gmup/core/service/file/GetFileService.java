@@ -6,12 +6,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.gmup.core.domain.FileDownloadWithToken;
 import org.example.gmup.core.domain.FileMetaData;
+import org.example.gmup.core.domain.User;
 import org.example.gmup.core.domain.exception.FIleNotExistsException;
 import org.example.gmup.core.domain.exception.FileDownloadAccessDeniedException;
 import org.example.gmup.port.inbound.file.GetFileUC;
 import org.example.gmup.port.outbound.file.GetFileMetaDataPort;
 import org.example.gmup.port.outbound.file.GetFilePresidedUrlPort;
 import org.example.gmup.port.outbound.file.UpdateFileMetaDataAfterDownloadPort;
+import org.example.gmup.port.outbound.user.UserInformationPort;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,11 +30,15 @@ public class GetFileService implements GetFileUC {
     private GetFileMetaDataPort getFileMetaDataPort;
     private GetFilePresidedUrlPort getFilePresidedUrlPort;
     private UpdateFileMetaDataAfterDownloadPort updateFileMetaDataAfterDownloadPort;
+    private UserInformationPort userInformationPort;
 
 
     @Override
-    public FileDownloadWithToken getFileMetaDataWithToken(String fileName , Long userId) {
-        Optional<FileMetaData> fileMetaData = getFileMetaDataPort.getFileMetaData(fileName, userId);
+    public FileDownloadWithToken getFileMetaDataWithToken(String fileName ,String username) {
+        User user = userInformationPort.getUserInformation(username).orElseThrow(
+                () -> new UsernameNotFoundException("user by username " + username + " not found ! //from GetFileService/getFileMetaDataWithToken"));
+
+        Optional<FileMetaData> fileMetaData = getFileMetaDataPort.getFileMetaData(fileName, user.getId());
         if (fileMetaData.isEmpty())
             throw new FIleNotExistsException("file meta data not found by filename : " + fileName + "//from GetFileService/getFileMetaDataWithToken ");
         String token = getFilePresidedUrlPort.getFilePresidedUrl(fileMetaData.get());
