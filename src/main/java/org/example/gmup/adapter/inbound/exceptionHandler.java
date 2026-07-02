@@ -5,6 +5,7 @@ import org.example.gmup.adapter.inbound.exception.StorageProblemException;
 import org.example.gmup.core.domain.exception.FIleNotExistsException;
 import org.example.gmup.core.domain.exception.FileDownloadAccessDeniedException;
 import org.example.gmup.core.domain.exception.UserNameAlreadyExistsException;
+import org.example.gmup.core.domain.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -26,5 +27,10 @@ public class exceptionHandler {
     @ExceptionHandler(UserNameAlreadyExistsException.class)
     public ResponseEntity<String> handleUserNameAlreadyExistsException(UserNameAlreadyExistsException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 }

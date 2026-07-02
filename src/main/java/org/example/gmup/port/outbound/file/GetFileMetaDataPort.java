@@ -12,4 +12,6 @@ public interface GetFileMetaDataPort {
 
     Optional<FileMetaData> getFileMetaData(String shortCode);
 
+    Optional<List<FileMetaData>> getFileMetaDataList(Long userId);
+
 }

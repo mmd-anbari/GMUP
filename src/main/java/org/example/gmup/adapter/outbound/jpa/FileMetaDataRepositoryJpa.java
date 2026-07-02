@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -26,4 +27,6 @@ public interface FileMetaDataRepositoryJpa extends JpaRepository<FileMetaDataEnt
     int incrementDownloadCount(@Param("id") Long id);
 
     Optional<FileMetaDataEntity> getFileMetaDataEntityByShortCode(String shortCode);
+
+    Optional<List<FileMetaData>> findByUser_Id(Long userId);
 }

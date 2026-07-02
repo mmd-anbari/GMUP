@@ -37,26 +37,16 @@ public class SecurityAppConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // ۱. غیرفعال کردن CSRF برای تست راحت APIها
-                .csrf(csrf -> csrf.disable())
-
+                .csrf(csrf -> csrf.disable()) // غیرفعال برای APIها
                 .authorizeHttpRequests(auth -> auth
-                        // ۲. باز کردن تمام مسیرهای سواگر تا صفحه بدون مشکل لود شود
-                        .requestMatchers(
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html"
-                        ).permitAll()
+                        // مسیرهای عمومی
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html" , "/auth" , "/").permitAll()
+                        .requestMatchers("/users/signUp").permitAll() // حتماً اینجا اضافه کن!
+                        .requestMatchers("/login").permitAll()       // مسیر لاگین باز باشد
 
-                        // ۳. مسیرهای عمومی خودت
-                        .requestMatchers(HttpMethod.GET, "/fileManager/files").permitAll()
-
-                        // ۴. تمام مسیرهای دیگر (شامل آپلود و اینفو) نیاز به لاگین دارند
+                        // بقیه مسیرها نیاز به احراز هویت دارند
                         .anyRequest().authenticated()
                 )
-
-                // ۵. حل مشکل ۴۰۴ و نال شدن در سواگر:
-                // به اسپرینگ می‌گوییم بعد از لاگین موفق، مستقیم مرورگر را بفرست به سواگر
                 .formLogin(form -> form
                         .defaultSuccessUrl("/swagger-ui/index.html", true)
                 );

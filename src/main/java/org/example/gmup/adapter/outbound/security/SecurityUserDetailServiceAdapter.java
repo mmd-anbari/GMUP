@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+import static org.springframework.security.core.userdetails.User.builder;
+
 @Component
 @RequiredArgsConstructor
 public class SecurityUserDetailServiceAdapter implements UserDetailsService {
@@ -22,7 +24,7 @@ public class SecurityUserDetailServiceAdapter implements UserDetailsService {
         Optional<User> user = userInformationPort.getUserInformation(username);
         if (user.isEmpty())
             throw new UsernameNotFoundException("user by username " + username + " not found !");
-        return org.springframework.security.core.userdetails.User.
+        return UserSecurity.
                 builder().
                 username(user.get().getUsername()).
                 password(user.get().getPassword()).

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GMUP | ورود و عضویت</title>
+
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #3730a3;
+            --secondary: #ec4899;
+            --bg-light: #f8fafc;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Vazirmatn', sans-serif; transition: all 0.4s ease; }
+
+        body {
+            background: linear-gradient(135deg, #e0e7ff 0%, #fce7f3 100%);
+            min-height: 100vh; display: flex; justify-content: center; align-items: center;
+            padding: 2rem; overflow: hidden;
+        }
+
+        /* دکمه بازگشت به خانه */
+        .back-btn {
+            position: absolute; top: 2rem; right: 2rem; display: flex; align-items: center; gap: 0.5rem;
+            color: var(--primary); text-decoration: none; font-weight: 700; font-size: 1.1rem;
+            background: white; padding: 0.7rem 1.2rem; border-radius: 50px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .back-btn:hover { transform: translateX(-5px); box-shadow: 0 6px 12px rgba(0,0,0,0.1); }
+
+        /* کانتینر اصلی فرم‌ها */
+        .auth-container {
+            position: relative; width: 100%; max-width: 450px;
+            background: var(--glass-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border-radius: 24px; box-shadow: var(--shadow-lg); overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            min-height: 550px;
+        }
+
+        /* هدر تب‌ها */
+        .auth-tabs { display: flex; border-bottom: 2px solid #e2e8f0; }
+        .tab-btn {
+            flex: 1; padding: 1.2rem; border: none; background: transparent;
+            font-size: 1.1rem; font-weight: 700; color: var(--text-muted); cursor: pointer;
+            position: relative; outline: none;
+        }
+        .tab-btn.active { color: var(--primary); }
+        .tab-indicator {
+            position: absolute; bottom: -2px; left: 0; width: 50%; height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 3px 3px 0 0; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* بخش فرم‌ها */
+        .forms-wrapper { position: relative; width: 200%; display: flex; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .form-panel { width: 50%; padding: 2.5rem; }
+
+        .auth-title { font-size: 1.8rem; margin-bottom: 0.5rem; color: var(--text-dark); }
+        .auth-subtitle { color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem; }
+
+        .input-group { position: relative; margin-bottom: 1.5rem; }
+        .input-group i { position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.2rem; }
+        .input-group input {
+            width: 100%; padding: 1rem 1rem 1rem 3rem; border: 2px solid #e2e8f0; border-radius: 12px;
+            background: rgba(255,255,255,0.9); font-size: 1rem; outline: none; color: var(--text-dark);
+        }
+        .input-group input:focus { border-color: var(--primary); }
+        .input-group input:focus + i { color: var(--primary); }
+
+        .btn-submit {
+            width: 100%; padding: 1rem; margin-top: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700;
+            cursor: pointer; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            display: flex; justify-content: center; align-items: center; gap: 0.5rem;
+        }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6); }
+
+        /* لودینگ */
+        .spinner { display: none; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Toast */
+        #toast-container { position: fixed; bottom: 30px; left: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 15px; }
+        .toast { padding: 1rem 1.5rem; border-radius: 12px; color: white; display: flex; align-items: center; gap: 10px; font-weight: 600; box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .toast.success { background: linear-gradient(135deg, #10b981, #059669); }
+        .toast.error { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        @keyframes slideIn { 0% { transform: translateX(-100%); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
+        @keyframes fadeOut { 0% { opacity: 1; } 100% { opacity: 0; } }
+    </style>
+</head>
+<body>
+
+<a href="/" class="back-btn">
+    <i class='bx bx-right-arrow-alt'></i> صفحه اصلی
+</a>
+
+<div class="auth-container">
+
+    <div class="auth-tabs">
+        <button class="tab-btn active" onclick="switchTab('login')">ورود</button>
+        <button class="tab-btn" onclick="switchTab('signup')">ثبت نام</button>
+        <div class="tab-indicator" id="tabIndicator"></div>
+    </div>
+
+    <div class="forms-wrapper" id="formsWrapper">
+
+        <div class="form-panel">
+            <h2 class="auth-title">خوش برگشتید!</h2>
+            <p class="auth-subtitle">برای مدیریت فایل‌های خود وارد حساب کاربری شوید.</p>
+
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <input type="text" id="li_username" placeholder="نام کاربری" required>
+                    <i class='bx bx-user'></i>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="li_password" placeholder="رمز عبور" required>
+                    <i class='bx bx-lock-alt'></i>
+                </div>
+                <button type="submit" class="btn-submit" id="btn_login">
+                    <span id="txt_login">ورود به پنل</span>
+                    <div class="spinner" id="spin_login"></div>
+                </button>
+            </form>
+        </div>
+
+        <div class="form-panel">
+            <h2 class="auth-title">شروعی تازه!</h2>
+            <p class="auth-subtitle">حساب کاربری رایگان خود را در عرض چند ثانیه بسازید.</p>
+
+            <form id="signupForm" onsubmit="handleSignup(event)">
+                <div style="display: flex; gap: 1rem;">
+                    <div class="input-group">
+                        <input type="text" id="su_firstname" placeholder="نام" required>
+                        <i class='bx bx-id-card'></i>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="su_lastname" placeholder="نام خانوادگی" required>
+                        <i class='bx bx-id-card'></i>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="su_username" placeholder="نام کاربری دلخواه" required>
+                    <i class='bx bx-user-plus'></i>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="su_password" placeholder="رمز عبور قدرتمند" required minlength="4">
+                    <i class='bx bx-check-shield'></i>
+                </div>
+                <button type="submit" class="btn-submit" id="btn_signup" style="background: linear-gradient(135deg, var(--secondary), #f43f5e);">
+                    <span id="txt_signup">ایجاد حساب</span>
+                    <div class="spinner" id="spin_signup"></div>
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script>
+    // --- توابع تغییر ظاهر فرم (تب‌ها) ---
+    function switchTab(tab) {
+        const wrapper = document.getElementById('formsWrapper');
+        const indicator = document.getElementById('tabIndicator');
+        const btns = document.querySelectorAll('.tab-btn');
+
+        btns.forEach(b => b.classList.remove('active'));
+
+        if (tab === 'login') {
+            wrapper.style.transform = 'translateX(0)';
+            indicator.style.transform = 'translateX(0)';
+            btns[0].classList.add('active');
+        } else {
+            wrapper.style.transform = 'translateX(50%)'; // در حالت RTL باید 50% مثبت باشد
+            indicator.style.transform = 'translateX(-100%)';
+            btns[1].classList.add('active');
+        }
+    }
+
+    // --- سیستم Toast ---
+    function showToast(message, type = 'success') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `<span>${type === 'success' ? '✅' : '❌'}</span> <span>${message}</span>`;
+        container.appendChild(toast);
+        setTimeout(() => {
+            toast.style.animation = 'fadeOut 0.4s forwards';
+            setTimeout(() => toast.remove(), 400);
+        }, 3000);
+    }
+
+    // --- هندل کردن ثبت نام (ارسال JSON به کنترلر UseCase) ---
+    async function handleSignup(e) {
+        e.preventDefault();
+        const btnTxt = document.getElementById('txt_signup');
+        const spinner = document.getElementById('spin_signup');
+
+        btnTxt.style.display = 'none'; spinner.style.display = 'block';
+
+        const data = {
+            firstname: document.getElementById('su_firstname').value,
+            lastname: document.getElementById('su_lastname').value,
+            username: document.getElementById('su_username').value,
+            password: document.getElementById('su_password').value
+        };
+
+        try {
+            const res = await fetch('/users/signUp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (res.ok) {
+                showToast('حساب با موفقیت ساخته شد! حالا وارد شوید.', 'success');
+                document.getElementById('signupForm').reset();
+                // با یک افکت قشنگ، کاربر رو هدایت میکنیم به فرم لاگین
+                setTimeout(() => switchTab('login'), 1500);
+            } else if (res.status === 409) {
+                showToast('این نام کاربری از قبل در سیستم وجود دارد!', 'error');
+            } else {
+                showToast('خطایی در ثبت‌نام رخ داد.', 'error');
+            }
+        } catch (err) {
+            showToast('خطای ارتباط با سرور', 'error');
+        } finally {
+            btnTxt.style.display = 'block'; spinner.style.display = 'none';
+        }
+    }
+
+    // --- هندل کردن لاگین (ارسال فرم به اسپرینگ سکیوریتی) ---
+    async function handleLogin(e) {
+        e.preventDefault();
+        const btnTxt = document.getElementById('txt_login');
+        const spinner = document.getElementById('spin_login');
+
+        btnTxt.style.display = 'none'; spinner.style.display = 'block';
+
+        const formData = new URLSearchParams();
+        formData.append('username', document.getElementById('li_username').value);
+        formData.append('password', document.getElementById('li_password').value);
+
+        try {
+            const res = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formData.toString()
+            });
+
+            if (res.ok) {
+                showToast('ورود موفقیت‌آمیز! در حال انتقال...', 'success');
+                // ریدایرکت به صفحه داشبورد کاربری (که در قدم بعدی می‌سازیم)
+                setTimeout(() => window.location.href = '/dashboard', 1000);
+            } else {
+                showToast('نام کاربری یا رمز عبور اشتباه است.', 'error');
+            }
+        } catch (err) {
+            showToast('خطای ارتباط با سرور', 'error');
+        } finally {
+            btnTxt.style.display = 'block'; spinner.style.display = 'none';
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GMUP | فضای ابری شما</title>
+
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #818cf8;
+            --primary-dark: #3730a3;
+            --bg-light: #f8fafc;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Vazirmatn', sans-serif; transition: all 0.3s ease; }
+
+        body { background-color: var(--bg-light); color: var(--text-dark); overflow-x: hidden; }
+
+        /* نوار ناوبری (Header) */
+        header {
+            position: fixed; width: 100%; top: 0; z-index: 1000;
+            background: var(--glass-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .logo { font-size: 1.8rem; font-weight: 800; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+
+        .search-bar {
+            display: flex; align-items: center; background: white;
+            border: 2px solid #e2e8f0; border-radius: 50px; padding: 0.3rem 1rem; width: 40%;
+        }
+        .search-bar:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15); }
+        .search-bar input { border: none; outline: none; width: 100%; padding: 0.5rem; font-size: 0.95rem; background: transparent; }
+        .search-bar button { background: var(--primary); color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .search-bar button:hover { background: var(--primary-dark); transform: scale(1.05); }
+
+        .nav-actions { display: flex; align-items: center; gap: 1.5rem; }
+
+        .profile-btn {
+            display: flex; align-items: center; gap: 0.5rem; color: var(--text-dark); text-decoration: none; font-weight: 600;
+            padding: 0.5rem 1rem; border-radius: 12px;
+        }
+        .profile-btn:hover { background: #f1f5f9; color: var(--primary); }
+        .profile-btn i { font-size: 1.5rem; }
+
+        /* بخش Hero */
+        .hero {
+            padding: 10rem 5% 5rem 5%; min-height: 80vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+            background: radial-gradient(circle at top, #e0e7ff 0%, var(--bg-light) 60%);
+        }
+        .hero h1 { font-size: 3.5rem; font-weight: 900; margin-bottom: 1rem; line-height: 1.2; color: #1e293b; }
+        .hero h1 span { color: var(--primary); }
+        .hero p { font-size: 1.2rem; color: var(--text-muted); max-width: 600px; margin-bottom: 2.5rem; line-height: 1.8; }
+
+        .cta-buttons { display: flex; gap: 1rem; }
+        .btn-main { background: var(--primary); color: white; padding: 1rem 2rem; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 1.1rem; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3); }
+        .btn-main:hover { background: var(--primary-dark); transform: translateY(-3px); }
+        .btn-sec { background: white; color: var(--text-dark); padding: 1rem 2rem; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 1.1rem; border: 2px solid #e2e8f0; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; justify-content: center;}
+        .btn-sec:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* مودال نتایج جستجو */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(5px);
+            z-index: 2000; display: none; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: white; border-radius: 24px; width: 90%; max-width: 500px;
+            padding: 2.5rem; box-shadow: var(--shadow-lg); text-align: center;
+            transform: translateY(50px); opacity: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-overlay.active .modal-content { transform: translateY(0); opacity: 1; }
+
+        .modal-close { position: absolute; top: 1.5rem; left: 1.5rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
+        .modal-close:hover { color: #ef4444; transform: rotate(90deg); }
+
+        .file-icon { font-size: 4rem; color: var(--primary); margin-bottom: 0.5rem; }
+
+        /* استایل جدید برای لیست اطلاعات فایل */
+        .file-details { margin: 1.5rem 0; text-align: right; background: #f8fafc; padding: 1.5rem; border-radius: 12px; border: 1px dashed #cbd5e1; }
+        .file-details p { margin-bottom: 0.8rem; font-size: 0.95rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem; display: flex; justify-content: space-between;}
+        .file-details p:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0;}
+        .file-details span { font-weight: 700; color: var(--primary-dark); }
+
+        .btn-download { flex: 1; background: #10b981; color: white; padding: 1rem; border-radius: 12px; text-decoration: none; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        .btn-download:hover { background: #059669; }
+
+        .loader { display: none; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 2rem auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="/" class="logo">
+        <i class='bx bxl-google-cloud'></i> GMUP
+    </a>
+
+    <div class="search-bar">
+        <input type="text" id="shortCodeInput" placeholder="کد 7 کاراکتری فایل را اینجا وارد کنید..." onkeypress="handleKeyPress(event)">
+        <button onclick="searchPublicFile()">
+            <i class='bx bx-search-alt-2'></i>
+        </button>
+    </div>
+
+    <div class="nav-actions">
+        <a href="/auth" class="profile-btn" onclick="checkAuthAndRedirect()">
+            <span>حساب کاربری</span>
+            <i class='bx bx-user-circle'></i>
+        </a>
+    </div>
+</header>
+
+<section class="hero">
+    <h1>فایل‌های شما، <span>امن و همیشه در دسترس</span></h1>
+    <p>با GMUP به راحتی فایل‌های خود را آپلود کنید، آن‌ها را در فضایی امن مدیریت کنید و با یک لینک کوتاه (ShortCode) با دیگران به اشتراک بگذارید.</p>
+
+    <div class="cta-buttons">
+        <a href="#" class="btn-main" onclick="checkAuthAndRedirect()">شروع به کار (رایگان)</a>
+        <a href="#features" class="btn-sec">امکانات سیستم</a>
+    </div>
+</section>
+
+<div class="modal-overlay" id="searchModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal()"><i class='bx bx-x'></i></button>
+
+        <div id="loadingState" class="loader"></div>
+
+        <div id="resultState" style="display: none;">
+        </div>
+    </div>
+</div>
+
+<script>
+    function handleKeyPress(e) {
+        if (e.key === 'Enter') { searchPublicFile(); }
+    }
+
+    function checkAuthAndRedirect() {
+        alert("این دکمه بعداً کاربر را به صفحه پروفایل یا لاگین هدایت می‌کند.");
+    }
+
+    function closeModal() {
+        document.getElementById('searchModal').classList.remove('active');
+    }
+
+    // --- تابع کپی کردن URL ---
+    function copyToClipboard(url, btnElement) {
+        navigator.clipboard.writeText(url).then(() => {
+            // تغییر ظاهر دکمه برای حس بهتر (UX)
+            const originalHtml = btnElement.innerHTML;
+            btnElement.innerHTML = "<i class='bx bx-check-double'></i> کپی شد!";
+            btnElement.style.borderColor = "#10b981";
+            btnElement.style.color = "#10b981";
+
+            // برگرداندن ظاهر دکمه به حالت قبل بعد از 2 ثانیه
+            setTimeout(() => {
+                btnElement.innerHTML = originalHtml;
+                btnElement.style.borderColor = "#e2e8f0";
+                btnElement.style.color = "var(--text-dark)";
+            }, 2000);
+        }).catch(err => {
+            console.error('خطا در کپی کردن متن: ', err);
+            alert("مرورگر شما از قابلیت کپی خودکار پشتیبانی نمی‌کند.");
+        });
+    }
+
+    async function searchPublicFile() {
+        const shortCode = document.getElementById('shortCodeInput').value.trim();
+        if (!shortCode) { alert("لطفا کد فایل را وارد کنید!"); return; }
+
+        const modal = document.getElementById('searchModal');
+        const loading = document.getElementById('loadingState');
+        const resultBox = document.getElementById('resultState');
+
+        modal.classList.add('active');
+        loading.style.display = 'block';
+        resultBox.style.display = 'none';
+
+        try {
+            const response = await fetch(`/fileManager/files?shortCode=${shortCode}`);
+
+            loading.style.display = 'none';
+            resultBox.style.display = 'block';
+
+            if (response.ok) {
+                const fileData = await response.json();
+
+                // استخراج فیلدها و هندل کردن مقادیر خالی
+                const isPublicStatus = (fileData.public || fileData.isPublic) ? 'بله' : 'خیر';
+                const customName = fileData.fileName || fileData.filename || 'تنظیم نشده';
+                const oName = fileData.originalFilename || 'نامشخص';
+                const type = fileData.contentType || 'نامشخص';
+
+                // تبدیل تاریخ میلادی اسپرینگ به تاریخ و ساعت شمسی
+                let dateStr = 'نامشخص';
+                if (fileData.createdAt) {
+                    const dateObj = new Date(fileData.createdAt);
+                    dateStr = dateObj.toLocaleDateString('fa-IR') + ' - ' + dateObj.toLocaleTimeString('fa-IR', {hour: '2-digit', minute:'2-digit'});
+                }
+
+                // تزریق تمام اطلاعات FileMenu به HTML
+                resultBox.innerHTML = `
+                        <i class='bx bxs-file-blank file-icon'></i>
+                        <h3 style="color: #0f172a; margin-bottom: 0.5rem;">فایل پیدا شد!</h3>
+
+                        <div class="file-details">
+                            <p>نام فایل: <span dir="ltr">${customName}</span></p>
+                            <p>نام اصلی (سیستم): <span dir="ltr" style="font-size: 0.85rem; color: #64748b;">${oName}</span></p>
+                            <p>کد اشتراک: <span dir="ltr">${fileData.shortCode}</span></p>
+                            <p>نوع فایل: <span dir="ltr">${type}</span></p>
+                            <p>تعداد دانلود: <span>${fileData.downloadCount}</span></p>
+                            <p>دسترسی عمومی: <span>${isPublicStatus}</span></p>
+                            <p>تاریخ آپلود: <span dir="ltr">${dateStr}</span></p>
+                        </div>
+
+                        <div style="display: flex; gap: 0.8rem; margin-top: 1.5rem;">
+                            <a href="${fileData.token}" target="_blank" class="btn-download">
+                                <i class='bx bx-cloud-download'></i> دانلود
+                            </a>
+
+                            <button onclick="copyToClipboard('${fileData.token}', this)" class="btn-sec" style="flex: 1; margin: 0; padding: 1rem; border-radius: 12px; font-size: 1rem;">
+                                <i class='bx bx-copy'></i> کپی لینک
+                            </button>
+                        </div>
+                    `;
+            } else if (response.status === 403) {
+                resultBox.innerHTML = `
+                        <i class='bx bxs-lock file-icon' style="color: #ef4444;"></i>
+                        <h3 style="color: #ef4444;">دسترسی غیرمجاز</h3>
+                        <p style="margin-top: 1rem; color: #64748b;">این فایل خصوصی است.</p>
+                    `;
+            } else if (response.status === 404) {
+                resultBox.innerHTML = `
+                        <i class='bx bx-error-circle file-icon' style="color: #f59e0b;"></i>
+                        <h3 style="color: #f59e0b;">فایلی یافت نشد!</h3>
+                        <p style="margin-top: 1rem; color: #64748b;">کد وارد شده اشتباه است یا فایل حذف شده است.</p>
+                    `;
+            } else {
+                throw new Error('Server error');
+            }
+        } catch (error) {
+            loading.style.display = 'none';
+            resultBox.style.display = 'block';
+            resultBox.innerHTML = `
+                    <i class='bx bx-wifi-off file-icon' style="color: #ef4444;"></i>
+                    <h3 style="color: #ef4444;">خطای ارتباط با سرور</h3>
+                `;
+        }
+    }
+
+</script>
+</body>
+</html>

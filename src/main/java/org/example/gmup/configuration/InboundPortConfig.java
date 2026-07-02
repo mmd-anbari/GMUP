@@ -1,9 +1,9 @@
 package org.example.gmup.configuration;
 
 import org.example.gmup.core.service.User.SignUpService;
+import org.example.gmup.core.service.User.UserProfileService;
 import org.example.gmup.core.service.file.GetFileService;
 import org.example.gmup.core.service.file.UploadFileService;
-import org.example.gmup.port.inbound.file.GetFileUC;
 import org.example.gmup.port.inbound.file.UploadFileUC;
 import org.example.gmup.port.inbound.user.SignUpUC;
 import org.example.gmup.port.outbound.file.*;
@@ -20,25 +20,28 @@ public class InboundPortConfig {
     @Bean
     public UploadFileUC uploadFile(CheckFileValidationsPort checkFileValidationsPort,
                                    SaveFileStreamPort saveFileStreamPort,
-                                   SaveFileMetaDataPort saveFileMetaDataPort,
-                                   UserInformationPort userInformationPort) {
+                                   SaveFileMetaDataPort saveFileMetaDataPort) {
 
-        return new UploadFileService(checkFileValidationsPort, saveFileStreamPort, saveFileMetaDataPort, userInformationPort);
+        return new UploadFileService(checkFileValidationsPort, saveFileStreamPort, saveFileMetaDataPort);
     }
 
 
     @Bean
-    public GetFileUC getFileUC(GetFileMetaDataPort getFileMetaDataPort,
-                               GetFilePresidedUrlPort getFilePresidedUrlPort,
-                               UpdateFileMetaDataAfterDownloadPort updateFileMetaDataAfterDownloadPort,
-                               UserInformationPort userInformationPort) {
+    public  GetFileService getFileService(GetFileMetaDataPort getFileMetaDataPort,
+                                      GetFilePresidedUrlPort getFilePresidedUrlPort,
+                                      UpdateFileMetaDataAfterDownloadPort updateFileMetaDataAfterDownloadPort) {
 
-        return new GetFileService(getFileMetaDataPort, getFilePresidedUrlPort, updateFileMetaDataAfterDownloadPort, userInformationPort);
+        return new GetFileService(getFileMetaDataPort, getFilePresidedUrlPort, updateFileMetaDataAfterDownloadPort);
     }
 
     @Bean
     public SignUpUC signUpUC(UserSignUpPort userSignUpPort, UserInformationPort userInformationPort , PasswordEncoderPort passwordEncoderPort) {
         return new SignUpService(userSignUpPort, userInformationPort, passwordEncoderPort);
+    }
+
+    @Bean
+    public UserProfileService userProfileService(UserInformationPort userInformationPort) {
+        return new UserProfileService(userInformationPort);
     }
 
 }
