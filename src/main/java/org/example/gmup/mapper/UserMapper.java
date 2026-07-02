@@ -1,5 +1,6 @@
 package org.example.gmup.mapper;
 
+import org.example.gmup.adapter.inbound.dto.user.UserProfileMenu;
 import org.example.gmup.adapter.outbound.entity.UserEntity;
 import org.example.gmup.core.dto.SaveNewUserCommand;
 import org.example.gmup.core.domain.User;
@@ -13,5 +14,7 @@ public interface UserMapper {
     User toDomainFromUserEntity(UserEntity userEntity);
 
     UserEntity toUserEntityFromUser(User user);
+
+    UserProfileMenu fromUserToUserProfileMenu(User user);
 
 }

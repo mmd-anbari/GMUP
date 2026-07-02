@@ -8,6 +8,8 @@ public interface UserInformationPort {
 
     Optional<User> getUserInformation(String userName);
 
+    Optional<User> getUserInformation(long userId);
+
     boolean userNameExists(String userName);
 
 }

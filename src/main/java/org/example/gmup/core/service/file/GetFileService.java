@@ -4,17 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.example.gmup.core.domain.FileDownloadWithToken;
 import org.example.gmup.core.domain.FileMetaData;
-import org.example.gmup.core.domain.User;
 import org.example.gmup.core.domain.exception.FIleNotExistsException;
 import org.example.gmup.core.domain.exception.FileDownloadAccessDeniedException;
-import org.example.gmup.port.inbound.file.GetFileUC;
+import org.example.gmup.port.inbound.file.PrivateGetFileUC;
+import org.example.gmup.port.inbound.file.PublicGetFileUC;
 import org.example.gmup.port.outbound.file.GetFileMetaDataPort;
 import org.example.gmup.port.outbound.file.GetFilePresidedUrlPort;
 import org.example.gmup.port.outbound.file.UpdateFileMetaDataAfterDownloadPort;
-import org.example.gmup.port.outbound.user.UserInformationPort;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,46 +21,57 @@ import java.util.Optional;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetFileService implements GetFileUC {
+public class GetFileService implements PrivateGetFileUC , PublicGetFileUC {
 
 
     private GetFileMetaDataPort getFileMetaDataPort;
     private GetFilePresidedUrlPort getFilePresidedUrlPort;
     private UpdateFileMetaDataAfterDownloadPort updateFileMetaDataAfterDownloadPort;
-    private UserInformationPort userInformationPort;
 
 
     @Override
-    public FileDownloadWithToken getFileMetaDataWithToken(String fileName ,String username) {
-        User user = userInformationPort.getUserInformation(username).orElseThrow(
-                () -> new UsernameNotFoundException("user by username " + username + " not found ! //from GetFileService/getFileMetaDataWithToken"));
+    public FileMetaData getFileMetaData(String fileName ,long userId) {
 
-        Optional<FileMetaData> fileMetaData = getFileMetaDataPort.getFileMetaData(fileName, user.getId());
+        Optional<FileMetaData> fileMetaData = getFileMetaDataPort.getFileMetaData(fileName, userId);
         if (fileMetaData.isEmpty())
             throw new FIleNotExistsException("file meta data not found by filename : " + fileName + "//from GetFileService/getFileMetaDataWithToken ");
         String token = getFilePresidedUrlPort.getFilePresidedUrl(fileMetaData.get());
         updateFileMetaDataAfterDownloadPort.increaseDownloadCount(fileMetaData.get());
-        return new FileDownloadWithToken(fileMetaData.get() , token);
-    }
-
-
-    //TODO add cacheable for the part of saving token for each file in reddis!
-    @Override
-    public List<FileDownloadWithToken> getFilesMetaDataWithToken(Long userId) {
-        return List.of();
+        return fileMetaData.get();
     }
 
 
     @Override
-    public FileDownloadWithToken getFileMetaDataWithToken(String shortCode) {
+    public List<FileMetaData> getAllFileMetaData(long userId){
+        Optional<List<FileMetaData>> fileMetaDataList = getFileMetaDataPort.getFileMetaDataList(userId);
+        if(fileMetaDataList.isEmpty())
+            throw new FIleNotExistsException("there is no file uploaded for user by id : " + userId);
+        return fileMetaDataList.get();
+    }
+
+
+    @Override
+    public FileMetaData getFileMetaData(String shortCode) {
         Optional<FileMetaData> fileMetaData = getFileMetaDataPort.getFileMetaData(shortCode);
         if(fileMetaData.isEmpty())
             throw new FIleNotExistsException("file meta data not found by shortCode : " + shortCode + "//from GetFileService/getFileMetaDataWithToken ");
 
         if(!fileMetaData.get().isPublic())
             throw new FileDownloadAccessDeniedException("this file is not public for download with shortCode : " + shortCode + "//from GetFileService/getFileMetaDataWithToken ");
-        String token = getFilePresidedUrlPort.getFilePresidedUrl(fileMetaData.get());
-        return new FileDownloadWithToken(fileMetaData.get() , token);
+        return fileMetaData.get();
+
+    }
+
+    //TODO i can add redis here for caching the FileMetas with key of short code !
+    @Override
+    public String getFileToken(String shortCode) {
+        Optional<FileMetaData> fileMetaData = getFileMetaDataPort.getFileMetaData(shortCode);
+        if(fileMetaData.isEmpty())
+            throw new FIleNotExistsException("file meta data not found by shortCode : " + shortCode + "//from GetFileService/getFileMetaDataWithToken ");
+
+        if(!fileMetaData.get().isPublic())
+            throw new FileDownloadAccessDeniedException("this file is not public for download with shortCode : " + shortCode + "//from GetFileService/getFileMetaDataWithToken ");
+        return getFilePresidedUrlPort.getFilePresidedUrl(fileMetaData.get());
 
     }
 

@@ -9,6 +9,7 @@ import org.example.gmup.port.outbound.file.GetFileMetaDataPort;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -37,5 +38,10 @@ public class GetFileMetaDataAdapter implements GetFileMetaDataPort {
     public Optional<FileMetaData> getFileMetaData(String shortCode) {
         Optional<FileMetaDataEntity> fileMetaDataEntity = fileMetaDataRepositoryJpa.getFileMetaDataEntityByShortCode(shortCode);
         return fileMetaDataEntity.map(fileMapper::toDomain);
+    }
+
+    @Override
+    public Optional<List<FileMetaData>> getFileMetaDataList(Long userId) {
+        return fileMetaDataRepositoryJpa.findByUser_Id(userId);
     }
 }

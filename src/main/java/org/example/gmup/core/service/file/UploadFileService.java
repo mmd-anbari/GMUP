@@ -23,17 +23,10 @@ public class UploadFileService implements UploadFileUC {
     private CheckFileValidationsPort checkFileValidationsPort;
     private SaveFileStreamPort saveFileStreamPort;
     private SaveFileMetaDataPort saveFileMetaDataPort;
-    private UserInformationPort userInformationPort;
 
 
     @Override
-    public boolean uploadFile(FileUploadCommand fileUploadCommand , String username) {
-
-        User user = userInformationPort.getUserInformation(username).orElseThrow(
-                ()-> new UsernameNotFoundException("user by username " + username + " not found! // from UploadFileService/uploadFile")
-        );
-
-        Long userId = user.getId();
+    public boolean uploadFile(FileUploadCommand fileUploadCommand , long userId) {
 
         if(checkFileValidationsPort.isDuplicatedFileName(fileUploadCommand.originalFilename())){
             return false;

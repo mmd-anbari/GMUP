@@ -34,6 +34,11 @@ public class UserRepositoryAdapter implements UserSignUpPort , UserInformationPo
     }
 
     @Override
+    public Optional<User> getUserInformation(long userId) {
+        return userRepositoryJpa.getUserEntityById(userId);
+    }
+
+    @Override
     public boolean userNameExists(String userName) {
         return userRepositoryJpa.existsByUsername(userName);
     }

@@ -1,6 +1,7 @@
 package org.example.gmup.mapper;
 
 import org.example.gmup.adapter.inbound.dto.file.FileMenu;
+import org.example.gmup.adapter.inbound.dto.file.ProfileFileMetaData;
 import org.example.gmup.adapter.outbound.entity.FileMetaDataEntity;
 import org.example.gmup.core.domain.File;
 import org.example.gmup.core.domain.FileDownloadWithToken;
@@ -20,6 +21,8 @@ public interface FileMapper {
     FileMetaData fromMultipartFileToFileMetaData(MultipartFile multipartFile);
     @Mapping(target = "." , source = "fileMetadata")
     FileMenu fromFileWithDownloadTokenToFileMenu(FileDownloadWithToken fileDownloadWithToken);
+
+    ProfileFileMetaData fromFileMetaToProfileFileMetaData(FileMetaData fileMetaData);
 
 
 }
