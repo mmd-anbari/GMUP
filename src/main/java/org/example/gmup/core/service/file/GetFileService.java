@@ -35,7 +35,7 @@ public class GetFileService implements PrivateGetFileUC , PublicGetFileUC {
         Optional<FileMetaData> fileMetaData = getFileMetaDataPort.getFileMetaData(fileName, userId);
         if (fileMetaData.isEmpty())
             throw new FIleNotExistsException("file meta data not found by filename : " + fileName + "//from GetFileService/getFileMetaDataWithToken ");
-        String token = getFilePresidedUrlPort.getFilePresidedUrl(fileMetaData.get());
+
         updateFileMetaDataAfterDownloadPort.increaseDownloadCount(fileMetaData.get());
         return fileMetaData.get();
     }
@@ -58,6 +58,7 @@ public class GetFileService implements PrivateGetFileUC , PublicGetFileUC {
 
         if(!fileMetaData.get().isPublic())
             throw new FileDownloadAccessDeniedException("this file is not public for download with shortCode : " + shortCode + "//from GetFileService/getFileMetaDataWithToken ");
+        updateFileMetaDataAfterDownloadPort.increaseDownloadCount(fileMetaData.get());
         return fileMetaData.get();
 
     }

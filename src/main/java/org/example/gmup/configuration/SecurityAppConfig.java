@@ -37,18 +37,27 @@ public class SecurityAppConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // غیرفعال برای APIها
+                .csrf(csrf -> csrf.disable()) // غیرفعال برای APIها (برای شروع کار خوبه)
                 .authorizeHttpRequests(auth -> auth
-                        // مسیرهای عمومی
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html" , "/auth" , "/").permitAll()
-                        .requestMatchers("/users/signUp").permitAll() // حتماً اینجا اضافه کن!
-                        .requestMatchers("/login").permitAll()       // مسیر لاگین باز باشد
+                        // مسیرهای عمومی که همه دسترسی دارند
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/auth",           // صفحه ورود اختصاصی شما
+                                "/",               // صفحه اصلی سایت (ایندکس)
+                                "/users/signUp",   // API ثبت نام
+                                "/login",          // API ورود
+                                "/public/**"       // <--- این مسیر تمام ارورهای سرچ و دانلود فایل را حل می‌کند
+                        ).permitAll()
 
-                        // بقیه مسیرها نیاز به احراز هویت دارند
+                        // بقیه مسیرها (مثل /dashboard) نیاز به احراز هویت دارند
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .defaultSuccessUrl("/swagger-ui/index.html", true)
+                        .loginPage("/auth") // استفاده از صفحه لاگین اختصاصی خودت به جای صفحه پیش‌فرض اسپرینگ
+                        .loginProcessingUrl("/login") // آدرسی که فرم لاگین دیتا رو بهش می‌فرسته (POST)
+                        .defaultSuccessUrl("/dashboard", true) // بعد از لاگین موفق بره داشبورد
                 );
 
         return http.build();
