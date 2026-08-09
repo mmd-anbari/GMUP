@@ -1,125 +1,55 @@
-<br/>
-<div align="center">
-  <a href="https://github.com">
-    <img src="https://cdn-icons-png.flaticon.com/512/3214/3214406.png" alt="Logo" width="100" height="100">
-  </a>
+# 🚀 GMUP (Generic Management & Upload Platform)
 
-  <h1 align="center">🌟 GMUP 🌟</h1>
+> **⚠️ Development Status:** This project is under active development. API structures, database schemas, and core services may evolve over time.
 
-  <p align="center">
-    <strong>Enterprise-Grade File Management & Upload Service</strong>
-    <br/>
-    <i>Architected for scale, performance, and ultimate decoupling.</i>
-    <br/>
-    <br/>
-    <a href="#-features"><strong>Explore the docs »</strong></a>
-    <br/>
-    <br/>
-    <a href="#">View Demo</a>
-    ·
-    <a href="#">Report Bug</a>
-    ·
-    <a href="#">Request Feature</a>
-  </p>
-</div>
+A comprehensive, modular, and secure platform for user and file management. This system is meticulously designed around **Clean Architecture (Hexagonal Architecture / Ports and Adapters)** principles to ensure the core business logic remains completely independent of external frameworks, databases, and user interfaces, making it highly maintainable and scalable.
 
-<div align="center">
-  <img src="https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java" />
-  <img src="https://img.shields.io/badge/Spring_Boot-3.2.5-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white" alt="Spring Boot" />
-  <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="Postgres" />
-  <img src="https://img.shields.io/badge/MinIO-C7202C?style=for-the-badge&logo=minio&logoColor=white" alt="Minio" />
-</div>
+---
 
-<br/>
+## ✨ Key Features
 
-## 📖 About The Project
+### 👤 User Management
+* **Authentication & Registration:** Secure flows for user sign-up and login.
+* **Robust Security:** Implements strong password encoding and strict security standards to protect sensitive user data.
+* **Profile Management:** Structured tools for managing user information and access levels.
 
-**GMUP** is a meticulously crafted backend service designed to handle file streams, metadata, and user integrations safely and efficiently. By employing **Ports and Adapters (Hexagonal Architecture)**, the system's core domain remains completely independent of its delivery mechanisms (REST APIs) and persistence layers (JPA / MinIO). 
+### 📁 File Management System
+* **Seamless & Secure Uploads:** Supports file uploads with comprehensive validations.
+* **MinIO Storage Integration:** Fully integrated with MinIO for distributed, scalable, and high-performance object storage.
+* **Controlled Downloads:** Implements a token-based system to generate presigned URLs, ensuring file access is highly secure.
+* **Metadata Tracking:** Persistent storage of file metadata in the database for rapid search and retrieval.
 
-This means you get a system where the business rules dictate the infrastructure, not the other way around.
+---
 
-<br/>
+## 🏗 Architecture & Design
 
-## 💎 Features
+This project strictly adheres to **Clean Architecture** principles:
+* **Core / Domain:** The heart of the system containing business entities and logic, with zero dependencies on outer layers.
+* **Ports:** Interfaces defining the inbound and outbound communication boundaries between the core and the outside world.
+* **Adapters:** Technical implementations for communicating with the database (JPA), cloud storage (MinIO), web controllers (Spring Web), and security mechanisms.
 
-<table align="center">
-  <tr>
-    <td width="50%">
-      <h3>☁️ Object Storage Ready</h3>
-      <p>Seamlessly streams large files directly into MinIO buckets without overwhelming application memory.</p>
-    </td>
-    <td width="50%">
-      <h3>🧠 Smart Metadata</h3>
-      <p>Persists file details (MIME type, original name, path) in PostgreSQL, creating a reliable index of all uploads.</p>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <h3>🛡️ Built-in Validations</h3>
-      <p>Automatically checks for file duplications before initiating the upload sequence to save bandwidth and storage.</p>
-    </td>
-    <td>
-      <h3>🏗️ Hexagonal Core</h3>
-      <p>Zero dependencies on Spring within the Domain layer. Clean abstraction using Inbound and Outbound ports.</p>
-    </td>
-  </tr>
-</table>
+---
 
-<br/>
+## 🛠 Tech Stack
 
-## 🗺️ Roadmap
+* **Language:** Java
+* **Framework:** Spring Boot
+* **Persistence / ORM:** JPA / Hibernate (Compatible with PostgreSQL, MySQL, etc.)
+* **Object Storage:** MinIO (S3-compatible)
+* **Frontend (SSR):** Thymeleaf (For Auth, Dashboard, and Index views)
 
-- [ ] **Authentication Layer:** Add secure Sign In and Sign Up using JWT.
-- [ ] **Personal Workspaces:** Isolate user storage logic so users only interact with their own files.
-- [ ] **Rate Limiting:** Implement limits on upload frequencies to prevent abuse.
-- [ ] **File Retrieval:** Implement secure download endpoints with temporary pre-signed URLs.
+---
 
-<br/>
-
-## ⚙️ Getting Started
-
-Follow these steps to get a local copy up and running.
+## 🚀 Getting Started
 
 ### Prerequisites
+To run this project locally, you will need:
+* **Java 17** (or higher)
+* **Maven**
+* A running **MinIO** server
+* A relational database (e.g., PostgreSQL or MySQL)
 
-Ensure your environment is equipped with:
-* **Java 21**
-* **PostgreSQL** (Port: `5432`)
-* **MinIO** (Port: `9000`)
-
-### Installation & Run
-
-<details>
-  <summary><b>Click to expand setup instructions</b></summary>
-  
-  <br/>
-  
-  1. **Clone the repo**
-     ```sh
-     git clone [https://github.com/your_username/gmup.git](https://github.com/your_username/gmup.git)
-     ```
-  2. **Configure your properties** (`src/main/resources/application.properties`)
-     ```properties
-     spring.datasource.url=jdbc:postgresql://localhost:5432/gmup
-     spring.datasource.username=postgres
-     spring.datasource.password=55455
-     
-     minio.endpoint=http://localhost:9000
-     minio.access-key=minioadmin
-     minio.secret-key=minioadmin
-     ```
-  3. **Run the application**
-     ```sh
-     ./mvnw spring-boot:run
-     ```
-</details>
-
-<br/>
-
-## 📐 Architecture Deep Dive
-
-```mermaid
-graph TD;
-    A[REST Controllers] -->|Inbound Port| B(Core: UploadFileService);
-    B -->|Outbound Port| C[PostgreSQL Adapter];
-    B -->|Outbound Port| D[MinIO Adapter];
+### Installation & Execution
+1. Clone the repository:
+   ```bash
+   git clone [https://github.com/mmd-anbari/gmup.git](https://github.com/mmd-anbari/gmup.git)
