@@ -1,55 +1,35 @@
-# 🚀 GMUP (Generic Management & Upload Platform)
+# GMUP (Generic Management & Upload Platform)
 
-> **⚠️ Development Status:** This project is under active development. API structures, database schemas, and core services may evolve over time.
+## Overview
+GMUP is a robust, modular, and secure platform designed for efficient file and user management. Built with a focus on Clean Architecture (Hexagonal Architecture), the project separates core business logic from external frameworks, ensuring maintainability and scalability.
 
-A comprehensive, modular, and secure platform for user and file management. This system is meticulously designed around **Clean Architecture (Hexagonal Architecture / Ports and Adapters)** principles to ensure the core business logic remains completely independent of external frameworks, databases, and user interfaces, making it highly maintainable and scalable.
+## Key Capabilities
 
----
+### 1. User Management
+* **Authentication:** Secure user registration and authentication flow.
+* **Profile Management:** Intuitive tools to handle user profiles and security details.
+* **Security:** Implements strong password encoding and security configurations to protect user data.
 
-## ✨ Key Features
+### 2. File Management System
+* **Seamless Uploads:** Support for file uploads with comprehensive validation.
+* **Metadata Tracking:** Every file is indexed with persistent metadata, allowing for easy retrieval and management.
+* **Secure Downloads:** Implements a token-based system to generate presigned URLs, ensuring that file access is secure and controlled.
+* **Storage Integration:** Built-in integration with MinIO for scalable, high-performance object storage.
 
-### 👤 User Management
-* **Authentication & Registration:** Secure flows for user sign-up and login.
-* **Robust Security:** Implements strong password encoding and strict security standards to protect sensitive user data.
-* **Profile Management:** Structured tools for managing user information and access levels.
+### 3. Architecture & Design
+* **Ports & Adapters (Hexagonal Architecture):** The system structure promotes independence from external frameworks (UI, Database, Storage), making it easier to evolve and test.
+* **Clean Logic:** Core services and domain models are isolated, focusing on business requirements rather than infrastructure details.
 
-### 📁 File Management System
-* **Seamless & Secure Uploads:** Supports file uploads with comprehensive validations.
-* **MinIO Storage Integration:** Fully integrated with MinIO for distributed, scalable, and high-performance object storage.
-* **Controlled Downloads:** Implements a token-based system to generate presigned URLs, ensuring file access is highly secure.
-* **Metadata Tracking:** Persistent storage of file metadata in the database for rapid search and retrieval.
-
----
-
-## 🏗 Architecture & Design
-
-This project strictly adheres to **Clean Architecture** principles:
-* **Core / Domain:** The heart of the system containing business entities and logic, with zero dependencies on outer layers.
-* **Ports:** Interfaces defining the inbound and outbound communication boundaries between the core and the outside world.
-* **Adapters:** Technical implementations for communicating with the database (JPA), cloud storage (MinIO), web controllers (Spring Web), and security mechanisms.
-
----
-
-## 🛠 Tech Stack
-
+## Technical Stack
 * **Language:** Java
 * **Framework:** Spring Boot
-* **Persistence / ORM:** JPA / Hibernate (Compatible with PostgreSQL, MySQL, etc.)
-* **Object Storage:** MinIO (S3-compatible)
-* **Frontend (SSR):** Thymeleaf (For Auth, Dashboard, and Index views)
+* **Persistence:** JPA / Hibernate
+* **Storage:** MinIO
+* **Frontend:** Thymeleaf (Auth, Dashboard, Index views)
+
+## Development Status
+⚠️ **Under Active Development**
+This project is currently in the active development phase. Features, API structures, and documentation are evolving. Contributions and feedback are welcome as we work towards a stable release.
 
 ---
-
-## 🚀 Getting Started
-
-### Prerequisites
-To run this project locally, you will need:
-* **Java 17** (or higher)
-* **Maven**
-* A running **MinIO** server
-* A relational database (e.g., PostgreSQL or MySQL)
-
-### Installation & Execution
-1. Clone the repository:
-   ```bash
-   git clone [https://github.com/mmd-anbari/gmup.git](https://github.com/mmd-anbari/gmup.git)
+*Built with clean architecture principles.*
