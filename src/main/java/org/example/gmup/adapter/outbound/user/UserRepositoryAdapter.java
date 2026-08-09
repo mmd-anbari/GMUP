@@ -35,7 +35,7 @@ public class UserRepositoryAdapter implements UserSignUpPort , UserInformationPo
 
     @Override
     public Optional<User> getUserInformation(long userId) {
-        return userRepositoryJpa.getUserEntityById(userId);
+        return userRepositoryJpa.getUserEntityById(userId).map(userMapper::toDomainFromUserEntity);
     }
 
     @Override

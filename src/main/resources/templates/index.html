@@ -150,9 +150,9 @@
         if (e.key === 'Enter') { searchPublicFile(); }
     }
 
-    function checkAuthAndRedirect() {
-        alert("این دکمه بعداً کاربر را به صفحه پروفایل یا لاگین هدایت می‌کند.");
-    }
+    // function checkAuthAndRedirect() {
+    //     alert("این دکمه بعداً کاربر را به صفحه پروفایل یا لاگین هدایت می‌کند.");
+    // }
 
     function closeModal() {
         document.getElementById('searchModal').classList.remove('active');
@@ -192,7 +192,7 @@
         resultBox.style.display = 'none';
 
         try {
-            const response = await fetch(`/fileManager/files?shortCode=${shortCode}`);
+            const response = await fetch(`/public/files?shortCode=${shortCode}`);
 
             loading.style.display = 'none';
             resultBox.style.display = 'block';
@@ -229,7 +229,7 @@
                         </div>
 
                         <div style="display: flex; gap: 0.8rem; margin-top: 1.5rem;">
-                            <a href="${fileData.token}" target="_blank" class="btn-download">
+                            <a onclick="downloadWithToken()" target="_blank" class="btn-download">
                                 <i class='bx bx-cloud-download'></i> دانلود
                             </a>
 
@@ -261,6 +261,13 @@
                     <h3 style="color: #ef4444;">خطای ارتباط با سرور</h3>
                 `;
         }
+    }
+    function downloadWithToken() {
+        // اگر توکن شما یک کد کوتاه (مثل abc12) است از خط پایین استفاده کنید (و آدرس را متناسب با API خودتان تنظیم کنید):
+        // const downloadUrl = '/download/' + currentToken;
+
+        // اما اگر بک‌اند شما خود لینک کامل را در توکن برمی‌گرداند، مستقیماً همان را در تب جدید باز کنید:
+        window.open(currentToken, '_blank');
     }
 
 </script>

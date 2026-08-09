@@ -28,5 +28,5 @@ public interface FileMetaDataRepositoryJpa extends JpaRepository<FileMetaDataEnt
 
     Optional<FileMetaDataEntity> getFileMetaDataEntityByShortCode(String shortCode);
 
-    Optional<List<FileMetaData>> findByUser_Id(Long userId);
+    List<FileMetaDataEntity> findByUser_Id(Long userId);
 }

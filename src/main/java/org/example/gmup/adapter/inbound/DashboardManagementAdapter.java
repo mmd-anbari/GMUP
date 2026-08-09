@@ -69,6 +69,7 @@ public class DashboardManagementAdapter {
 
         UserSecurity userSecurity = (UserSecurity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         long userId = userSecurity.getId();
+        System.out.println(userSecurity.getPassword());
         boolean b = uploadFileUC.uploadFile(fileUploadCommand, userId);
         if (b)
             System.out.println("Upload file successful");

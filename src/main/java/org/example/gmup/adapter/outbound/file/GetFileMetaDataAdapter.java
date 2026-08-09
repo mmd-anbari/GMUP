@@ -1,5 +1,6 @@
 package org.example.gmup.adapter.outbound.file;
 
+import lombok.val;
 import org.example.gmup.adapter.outbound.entity.FileMetaDataEntity;
 import org.example.gmup.adapter.outbound.jpa.FileMetaDataRepositoryJpa;
 import org.example.gmup.core.domain.FileMetaData;
@@ -41,7 +42,8 @@ public class GetFileMetaDataAdapter implements GetFileMetaDataPort {
     }
 
     @Override
-    public Optional<List<FileMetaData>> getFileMetaDataList(Long userId) {
-        return fileMetaDataRepositoryJpa.findByUser_Id(userId);
+    public List<FileMetaData> getFileMetaDataList(Long userId) {
+        List<FileMetaDataEntity> metaDataEntities = fileMetaDataRepositoryJpa.findByUser_Id(userId);
+        return metaDataEntities.stream().map(fileMapper::toDomain).toList();
     }
 }

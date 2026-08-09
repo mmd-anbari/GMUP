@@ -26,6 +26,7 @@ public class SecurityUserDetailServiceAdapter implements UserDetailsService {
             throw new UsernameNotFoundException("user by username " + username + " not found !");
         return UserSecurity.
                 builder().
+                 id(user.get().getId()).
                 username(user.get().getUsername()).
                 password(user.get().getPassword()).
                 build();

@@ -16,4 +16,10 @@ public class WebController {
     public String authPage() {
         return "auth";
     }
+
+
+    @GetMapping("/dashboard")
+    public String dashboard() {
+        return "dashboard";
+    }
 }

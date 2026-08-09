@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>داشبورد مدیریت فایل</title>
+
+    <!-- فونت وزیرمتن -->
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.0.0/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+
+    <!-- آیکون‌های Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <style>
+        /* =========================================
+           پایه و تنظیمات اولیه
+        ========================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .dashboard-container {
+            display: flex;
+            height: 100vh;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        /* سایدبار */
+        .sidebar {
+            width: 280px;
+            display: flex;
+            flex-direction: column;
+            padding: 30px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 50px;
+            padding-right: 10px;
+        }
+
+        .logo-section i {
+            font-size: 2.5rem;
+            color: #4facfe;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-grow: 1;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            border-radius: 15px;
+            font-size: 1.05rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            box-shadow: inset 4px 0 0 0 #4facfe;
+        }
+
+        .nav-links i { font-size: 1.5rem; }
+
+        .logout-item { margin-top: auto; }
+        .logout-item a { color: #ff758c; }
+        .logout-item a:hover {
+            background: rgba(255, 117, 140, 0.15);
+            color: #ff7eb3;
+            box-shadow: inset 4px 0 0 0 #ff758c;
+        }
+
+        /* محتوای اصلی */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+            padding-left: 10px;
+        }
+
+        .main-content::-webkit-scrollbar { width: 8px; }
+        .main-content::-webkit-scrollbar-track { background: transparent; }
+        .main-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+        }
+
+        .welcome-text h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .welcome-text h3 span { color: #4facfe; }
+        .welcome-text p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+        }
+
+        .user-profile-badge {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px 25px 10px 20px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .user-profile-badge i {
+            font-size: 2.8rem;
+            color: #e0e0e0;
+        }
+
+        .user-info { display: flex; flex-direction: column; }
+        .user-fullname { font-weight: 700; font-size: 1rem; }
+        .user-username {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+            direction: ltr;
+            text-align: right;
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            padding-bottom: 30px;
+        }
+
+        /* فرم آپلود */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+        }
+
+        .section-header i { font-size: 1.8rem; color: #4facfe; }
+        .section-header h4 { font-size: 1.2rem; font-weight: 600; }
+
+        .upload-section, .files-section { padding: 30px; }
+
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 600px;
+        }
+
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+
+        .glass-input {
+            background: rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 15px;
+            border-radius: 10px;
+            color: #fff;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .glass-input:focus {
+            border-color: #4facfe;
+            background: rgba(0, 0, 0, 0.25);
+        }
+
+        .file-input-group .file-label {
+            background: rgba(79, 172, 254, 0.05);
+            border: 2px dashed rgba(79, 172, 254, 0.4);
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .file-input-group .file-label:hover { background: rgba(79, 172, 254, 0.15); }
+        .file-label i { font-size: 2.5rem; color: #4facfe; }
+
+        .checkbox-group {
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .custom-checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: #4facfe;
+            cursor: pointer;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.6);
+        }
+
+        /* جدول */
+        .table-responsive { overflow-x: auto; }
+        .glass-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+        }
+
+        .glass-table th, .glass-table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-table th {
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .glass-table tbody tr { transition: background 0.3s; }
+        .glass-table tbody tr:hover { background: rgba(255, 255, 255, 0.08); }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .badge-public { background: rgba(0, 200, 81, 0.2); color: #00c851; }
+        .badge-private { background: rgba(255, 68, 68, 0.2); color: #ff4444; }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .action-btn:hover { background: #4facfe; }
+
+        /* =========================================
+           استایل‌های مودال (پاپ‌آپ) توکن
+        ========================================= */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal-content {
+            position: relative;
+            padding: 30px;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.6);
+            transition: 0.3s;
+        }
+
+        .close-modal:hover { color: #ff4444; }
+
+        .modal-content h4 {
+            margin-bottom: 10px;
+            color: #4facfe;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .token-display {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px dashed rgba(79, 172, 254, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 1.1rem;
+            color: #fff;
+            user-select: all;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .modal-actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            color: #fff;
+            flex: 1;
+        }
+
+        .btn-copy {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .btn-copy:hover { background: rgba(255, 255, 255, 0.2); }
+
+        .btn-download {
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+        }
+        .btn-download:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4); }
+
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+
+    <!-- سایدبار -->
+    <aside class="sidebar glass-panel">
+        <div class="logo-section">
+            <i class='bx bx-cloud'></i>
+            <h2>فایل‌سنتر</h2>
+        </div>
+
+        <ul class="nav-links">
+            <li>
+                <a href="#" class="active" id="nav-dashboard">
+                    <i class='bx bx-grid-alt'></i>
+                    <span>داشبورد</span>
+                </a>
+            </li>
+            <li>
+                <a href="#upload-section" id="nav-upload">
+                    <i class='bx bx-cloud-upload'></i>
+                    <span>آپلود فایل</span>
+                </a>
+            </li>
+            <li>
+                <a href="#files-section" id="nav-files">
+                    <i class='bx bx-folder-open'></i>
+                    <span>فایل‌های من</span>
+                </a>
+            </li>
+            <li class="logout-item">
+                <a href="/logout">
+                    <i class='bx bx-log-out'></i>
+                    <span>خروج از حساب</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- بخش اصلی محتوا -->
+    <main class="main-content">
+
+        <!-- هدر بالای صفحه -->
+        <header class="top-header glass-panel">
+            <div class="welcome-text">
+                <h3>خوش آمدید، <span id="user-firstname-display">کاربر</span> عزیز!</h3>
+                <p>امروز چه فایلی می‌خواهید آپلود کنید؟</p>
+            </div>
+
+            <div class="user-profile-badge">
+                <i class='bx bx-user-circle'></i>
+                <div class="user-info">
+                    <span class="user-fullname" id="header-fullname">درحال بارگذاری...</span>
+                    <span class="user-username" id="header-username">@username</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+
+            <!-- بخش آپلود فایل -->
+            <section id="upload-section" class="upload-section glass-panel">
+                <div class="section-header">
+                    <i class='bx bx-cloud-upload'></i>
+                    <h4>آپلود فایل جدید</h4>
+                </div>
+
+                <form id="upload-form" class="upload-form">
+                    <div class="form-group">
+                        <label for="customFileName">نام دلخواه فایل:</label>
+                        <input type="text" id="customFileName" name="fileName" required placeholder="مثال: گزارش پروژه" class="glass-input">
+                    </div>
+
+                    <div class="form-group file-input-group">
+                        <input type="file" id="fileToUpload" name="file" required class="file-input" hidden>
+                        <label for="fileToUpload" class="file-label">
+                            <i class='bx bx-file-blank'></i>
+                            <span id="file-name-display">فایلی انتخاب نشده است... برای انتخاب کلیک کنید</span>
+                        </label>
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="isPublic" name="isPublic" class="custom-checkbox">
+                        <label for="isPublic">این فایل عمومی باشد؟</label>
+                    </div>
+
+                    <button type="submit" class="btn-submit">
+                        <i class='bx bx-upload'></i>
+                        شروع آپلود
+                    </button>
+                </form>
+            </section>
+
+            <!-- بخش لیست فایل‌ها -->
+            <section id="files-section" class="files-section glass-panel">
+                <div class="section-header">
+                    <i class='bx bx-folder-open'></i>
+                    <h4>فایل‌های من</h4>
+                </div>
+
+                <!-- دکمه دریافت لیست فایل‌ها -->
+                <div id="load-files-container" style="margin-bottom: 20px;">
+                    <button id="btn-load-files" class="btn-submit" style="display: inline-flex; width: auto; padding: 10px 20px;">
+                        <i class='bx bx-cloud-download'></i> نمایش فایل‌های من
+                    </button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="glass-table" id="files-table">
+                        <thead>
+                        <tr>
+                            <th>نام فایل</th>
+                            <th>نام اصلی (Original)</th>
+                            <th>نوع فایل</th>
+                            <th>دسترسی</th>
+                            <th>تعداد دانلود</th>
+                            <th>عملیات</th>
+                        </tr>
+                        </thead>
+                        <tbody id="files-tbody">
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: #aaa;">برای مشاهده لیست فایل‌ها، روی دکمه «نمایش فایل‌های من» کلیک کنید.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </div>
+    </main>
+</div>
+
+<!-- مودال (پاپ‌آپ) نمایش توکن -->
+<div id="tokenModal" class="modal-overlay">
+    <div class="modal-content glass-panel">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <h4><i class='bx bx-link'></i> لینک دسترسی به فایل</h4>
+        <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-top: 5px;">شما می‌توانید از این لینک برای دانلود استفاده کنید.</p>
+        <div class="token-display" id="modalTokenText">در حال بارگذاری...</div>
+        <div class="modal-actions">
+            <button class="btn-copy" onclick="copyToken()" id="copyBtn">
+                <i class='bx bx-copy'></i> کپی لینک
+            </button>
+            <button class="btn-download" onclick="downloadWithToken()">
+                <i class='bx bx-download'></i> دانلود فایل
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- کدهای جاوا اسکریپت -->
+<script>
+    let currentToken = '';
+    let isFilesLoaded = false; // متغیری برای بررسی اینکه آیا فایل‌ها قبلا لود شده‌اند یا نه
+
+    document.addEventListener('DOMContentLoaded', () => {
+        fetchUserProfile();
+
+        // دیگر فایل‌ها رو همون اول لود نمی‌کنیم
+        // fetchFilesList();
+
+        // وصل کردن دکمه به تابع دریافت فایل‌ها
+        document.getElementById('btn-load-files').addEventListener('click', fetchFilesList);
+
+        const fileInput = document.getElementById('fileToUpload');
+        const fileNameDisplay = document.getElementById('file-name-display');
+
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                fileNameDisplay.textContent = this.files[0].name;
+                fileNameDisplay.style.color = '#4facfe';
+            } else {
+                fileNameDisplay.textContent = 'فایلی انتخاب نشده است... برای انتخاب کلیک کنید';
+                fileNameDisplay.style.color = 'inherit';
+            }
+        });
+
+        const uploadForm = document.getElementById('upload-form');
+        const submitBtn = uploadForm.querySelector('.btn-submit');
+
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const file = fileInput.files[0];
+            const customFileName = document.getElementById('customFileName').value;
+            const isPublic = document.getElementById('isPublic').checked;
+
+            if (!file) {
+                alert('لطفاً ابتدا یک فایل انتخاب کنید.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('fileName', customFileName);
+            formData.append('isPublic', isPublic);
+
+            try {
+                const originalBtnText = submitBtn.innerHTML;
+                submitBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> درحال آپلود...";
+                submitBtn.disabled = true;
+
+                const response = await fetch('/dashboard/files', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    alert('فایل با موفقیت آپلود شد!');
+                    uploadForm.reset();
+                    fileNameDisplay.textContent = 'فایلی انتخاب نشده است... برای انتخاب کلیک کنید';
+                    fileNameDisplay.style.color = 'inherit';
+
+                    // اگر کاربر قبلا لیست فایل‌ها را باز کرده، جدول را بروزرسانی کن
+                    if (isFilesLoaded) {
+                        fetchFilesList();
+                    }
+                } else {
+                    alert('خطا در آپلود فایل!');
+                }
+            } catch (error) {
+                console.error('Error uploading file:', error);
+                alert('خطای ارتباط با سرور.');
+            } finally {
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+            }
+        });
+    });
+
+    async function fetchUserProfile() {
+        try {
+            const res = await fetch('/dashboard/profiles');
+            if (res.ok) {
+                const profile = await res.json();
+                document.getElementById('user-firstname-display').textContent = profile.firstname;
+                document.getElementById('header-fullname').textContent = profile.firstname + ' ' + profile.lastname;
+                document.getElementById('header-username').textContent = '@' + profile.username;
+            }
+        } catch (error) {
+            console.error('Error fetching profile:', error);
+        }
+    }
+
+    async function fetchFilesList() {
+        const tbody = document.getElementById('files-tbody');
+        const loadBtn = document.getElementById('btn-load-files');
+        const loadBtnContainer = document.getElementById('load-files-container');
+
+        // تغییر ظاهر دکمه حین لودینگ
+        if (loadBtn) {
+            loadBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> درحال دریافت...";
+            loadBtn.disabled = true;
+        }
+
+        try {
+            const res = await fetch('/dashboard/files');
+            if (res.ok) {
+                const files = await res.json();
+                tbody.innerHTML = '';
+                isFilesLoaded = true; // علامت‌گذاری می‌کنیم که فایل‌ها لود شده‌اند
+
+                // مخفی کردن دکمه بعد از موفقیت‌آمیز بودن دریافت لیست
+                if (loadBtnContainer) {
+                    loadBtnContainer.style.display = 'none';
+                }
+
+                if (files.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">هنوز فایلی آپلود نکرده‌اید.</td></tr>';
+                    return;
+                }
+
+                files.forEach(file => {
+                    const badgeClass = file.isPublic ? 'badge-public' : 'badge-private';
+                    const badgeText = file.isPublic ? 'عمومی' : 'خصوصی';
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                            <td>${file.fileName}</td>
+                            <td dir="ltr" style="text-align: right;">${file.originalFilename}</td>
+                            <td dir="ltr" style="text-align: right;">${file.contentType}</td>
+                            <td><span class="badge ${badgeClass}">${badgeText}</span></td>
+                            <td>${file.downloadCount}</td>
+                            <td>
+                                <button class="action-btn" onclick="showTokenModal('${file.shortCode}')" title="دریافت توکن / لینک">
+                                    <i class='bx bx-key'></i>
+                                </button>
+                                <button class="action-btn" onclick="showInfo('${file.fileName}')" title="اطلاعات تکمیلی">
+                                    <i class='bx bx-info-circle'></i>
+                                </button>
+                            </td>
+                        `;
+                    tbody.appendChild(tr);
+                });
+            } else {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #ff4444;">خطا در دریافت لیست فایل‌ها</td></tr>';
+                // اگر خطا داد دکمه رو برمیگردونیم به حالت اول
+                if (loadBtn) {
+                    loadBtn.innerHTML = "<i class='bx bx-cloud-download'></i> تلاش مجدد";
+                    loadBtn.disabled = false;
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching files:', error);
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #ff4444;">خطای ارتباط با سرور</td></tr>';
+            if (loadBtn) {
+                loadBtn.innerHTML = "<i class='bx bx-cloud-download'></i> تلاش مجدد";
+                loadBtn.disabled = false;
+            }
+        }
+    }
+
+    // =========================================
+    // مدیریت مودال و عملیات توکن
+    // =========================================
+
+    async function showTokenModal(shortCode) {
+        try {
+            const res = await fetch('/dashboard/files/token?shortCode=' + shortCode);
+            if (res.ok) {
+                currentToken = await res.text();
+                document.getElementById('modalTokenText').textContent = currentToken;
+                document.getElementById('tokenModal').classList.add('active');
+            }
+        } catch (e) {
+            console.error('Error:', e);
+            alert('خطا در دریافت توکن');
+        }
+    }
+
+    function closeModal() {
+        document.getElementById('tokenModal').classList.remove('active');
+        const copyBtn = document.getElementById('copyBtn');
+        copyBtn.innerHTML = "<i class='bx bx-copy'></i> کپی لینک";
+        copyBtn.style.color = "#fff";
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('tokenModal');
+        if (event.target === modal) {
+            closeModal();
+        }
+    }
+
+    function copyToken() {
+        navigator.clipboard.writeText(currentToken).then(() => {
+            const copyBtn = document.getElementById('copyBtn');
+            copyBtn.innerHTML = "<i class='bx bx-check'></i> کپی شد!";
+            copyBtn.style.color = "#00c851";
+
+            setTimeout(() => {
+                copyBtn.innerHTML = "<i class='bx bx-copy'></i> کپی لینک";
+                copyBtn.style.color = "#fff";
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+            alert('مرورگر شما از قابلیت کپی پشتیبانی نمی‌کند.');
+        });
+    }
+
+    function downloadWithToken() {
+        // اگر توکن شما یک کد کوتاه (مثل abc12) است از خط پایین استفاده کنید (و آدرس را متناسب با API خودتان تنظیم کنید):
+        // const downloadUrl = '/download/' + currentToken;
+
+        // اما اگر بک‌اند شما خود لینک کامل را در توکن برمی‌گرداند، مستقیماً همان را در تب جدید باز کنید:
+        window.open(currentToken, '_blank');
+    }
+
+    // =========================================
+
+    async function showInfo(fileName) {
+        try {
+            const res = await fetch(`/dashboard/files/infos?fileName=${encodeURIComponent(fileName)}`);
+            if (res.ok) {
+                const info = await res.json();
+                const date = new Date(info.createdAt).toLocaleString('fa-IR');
+                alert(`نام فایل: ${info.fileName}\nتاریخ آپلود: ${date}`);
+            }
+        } catch (e) {
+            console.error('Error:', e);
+        }
+    }
+</script>
+</body>
+</html>
