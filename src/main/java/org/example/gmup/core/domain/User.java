@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.example.factory_core_manager.core.model.enumerated.UserType;
-
 import java.util.List;
 
 @Getter

@@ -1,4 +1,4 @@
-package org.example.factory_core_manager.core.model.enumerated;
+package org.example.gmup.core.domain.enumerated;
 
 public enum UserType {
     ADMIN , SUPER_ADMIN , USER

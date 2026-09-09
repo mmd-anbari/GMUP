@@ -1,4 +1,4 @@
-package org.example.factory_core_manager.core;
+package org.example.gmup.core;
 
 public class Test {
 }
