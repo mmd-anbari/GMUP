@@ -40,13 +40,9 @@ public class GetFileService implements PrivateGetFileUC , PublicGetFileUC {
         return fileMetaData.get();
     }
 
-//TODO if there are no files there is no need to throw an exception !
     @Override
     public List<FileMetaData> getAllFileMetaData(long userId){
-        List<FileMetaData> fileMetaDataList = getFileMetaDataPort.getFileMetaDataList(userId);
-        if(fileMetaDataList.isEmpty())
-            throw new FIleNotExistsException("there is no file uploaded for user by id : " + userId);
-        return fileMetaDataList;
+        return getFileMetaDataPort.getFileMetaDataList(userId);
     }
 
 

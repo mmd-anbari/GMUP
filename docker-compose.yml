@@ -1,0 +1,17 @@
+services:
+  minio:
+    image: minio/minio:latest
+    container_name: minio_storage
+    ports:
+      - "9000:9000"  # پورت اصلی برای اتصال API (استفاده در کد پروژه)
+      - "9001:9001"  # پورت رابط کاربری تحت وب (Console)
+    environment:
+      MINIO_ROOT_USER: "admin"       # نام کاربری ادمین (قابل تغییر)
+      MINIO_ROOT_PASSWORD: "admin123" # رمز عبور ادمین (قابل تغییر - حداقل ۸ کاراکتر)
+    volumes:
+      - minio_data:/data  # متصل کردن فضای ذخیره‌سازی برای ماندگاری اطلاعات
+    command: server /data --console-address ":9001"
+    restart: unless-stopped
+
+volumes:
+  minio_data:
