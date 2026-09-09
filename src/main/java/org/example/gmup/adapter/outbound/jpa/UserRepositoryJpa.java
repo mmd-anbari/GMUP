@@ -14,4 +14,8 @@ public interface UserRepositoryJpa extends JpaRepository<UserEntity, Long> {
     boolean existsByUsername(String username);
 
     Optional<UserEntity> getUserEntityById(Long id);
+
+    long getUserStorageLimitByUserId(Long userId);
+
+    void updateUserStorageLimitByUserId(Long userId, Long storageLimit);
 }

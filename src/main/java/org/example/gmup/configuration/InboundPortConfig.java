@@ -20,9 +20,10 @@ public class InboundPortConfig {
     @Bean
     public UploadFileUC uploadFile(CheckFileValidationsPort checkFileValidationsPort,
                                    SaveFileStreamPort saveFileStreamPort,
-                                   SaveFileMetaDataPort saveFileMetaDataPort) {
+                                   SaveFileMetaDataPort saveFileMetaDataPort,
+                                   UserStorageLimitPort userStorageLimitPort) {
 
-        return new UploadFileService(checkFileValidationsPort, saveFileStreamPort, saveFileMetaDataPort);
+        return new UploadFileService(checkFileValidationsPort, saveFileStreamPort, saveFileMetaDataPort ,userStorageLimitPort );
     }
 
 

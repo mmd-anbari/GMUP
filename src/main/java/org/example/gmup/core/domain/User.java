@@ -24,6 +24,7 @@ public class User {
     private String lastname;
     private String username;
     private String password;
+    private long storageLimitLeft;
     private List<Long> fileList;
 
 

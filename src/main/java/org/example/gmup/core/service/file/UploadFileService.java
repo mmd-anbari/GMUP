@@ -10,6 +10,7 @@ import org.example.gmup.port.inbound.file.UploadFileUC;
 import org.example.gmup.port.outbound.file.CheckFileValidationsPort;
 import org.example.gmup.port.outbound.file.SaveFileMetaDataPort;
 import org.example.gmup.port.outbound.file.SaveFileStreamPort;
+import org.example.gmup.port.outbound.file.UserStorageLimitPort;
 import org.example.gmup.port.outbound.user.UserInformationPort;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,6 +24,7 @@ public class UploadFileService implements UploadFileUC {
     private CheckFileValidationsPort checkFileValidationsPort;
     private SaveFileStreamPort saveFileStreamPort;
     private SaveFileMetaDataPort saveFileMetaDataPort;
+    private UserStorageLimitPort userStorageLimitPort;
 
 
     @Override
@@ -31,6 +33,13 @@ public class UploadFileService implements UploadFileUC {
         if(checkFileValidationsPort.isDuplicatedFileName(fileUploadCommand.originalFilename())){
             return false;
         }
+
+        long storageLimit = userStorageLimitPort.getStorageLimit(userId);
+        if(storageLimit <= fileUploadCommand.size()){
+            return false;
+        }
+
+        long newStorageLimit = storageLimit-fileUploadCommand.size();
 
         String pathName = saveFileStreamPort.saveFileStream(
                 fileUploadCommand.originalFilename(),
@@ -43,6 +52,8 @@ public class UploadFileService implements UploadFileUC {
 
 
         saveFileMetaDataPort.saveMetaData(fileMetaData , userId);
+        userStorageLimitPort.updateStorageLimit(userId, newStorageLimit);
+
 
 
 

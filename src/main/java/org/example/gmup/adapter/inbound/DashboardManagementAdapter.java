@@ -64,7 +64,8 @@ public class DashboardManagementAdapter {
                 fileName,
                 fileToUpload.getContentType(),
                 fileToUpload.getInputStream(),
-                isPublic
+                isPublic,
+                fileToUpload.getSize()
         );
 
         UserSecurity userSecurity = (UserSecurity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
