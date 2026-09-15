@@ -5,6 +5,8 @@ import org.example.gmup.core.dto.FileUploadCommand;
 
 public interface UploadFileUC {
 
-    boolean uploadFile(FileUploadCommand command , long userId);
+    String uploadFile(FileUploadCommand command , long userId);
+
+
 
 }

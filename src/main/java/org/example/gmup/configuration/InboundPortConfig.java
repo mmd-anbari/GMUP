@@ -19,11 +19,11 @@ public class InboundPortConfig {
 
     @Bean
     public UploadFileUC uploadFile(CheckFileValidationsPort checkFileValidationsPort,
-                                   SaveFileStreamPort saveFileStreamPort,
+                                   GetFilePresignedUploadUrlPort getFilePresignedUploadUrlPort,
                                    SaveFileMetaDataPort saveFileMetaDataPort,
                                    UserStorageLimitPort userStorageLimitPort) {
 
-        return new UploadFileService(checkFileValidationsPort, saveFileStreamPort, saveFileMetaDataPort ,userStorageLimitPort );
+        return new UploadFileService(checkFileValidationsPort, getFilePresignedUploadUrlPort, saveFileMetaDataPort ,userStorageLimitPort );
     }
 
 

@@ -10,5 +10,5 @@ public interface PrivateGetFileUC {
     List<FileMetaData> getAllFileMetaData(long userId);
 
 
-    String getFileToken(String shortCode);
+    String getFileTokenPrivate(String shortCode);
 }

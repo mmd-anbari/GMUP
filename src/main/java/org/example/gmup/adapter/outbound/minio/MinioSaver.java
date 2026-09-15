@@ -1,15 +1,20 @@
 package org.example.gmup.adapter.outbound.minio;
 
 import io.minio.*;
+import io.minio.http.Method;
 import jakarta.annotation.PostConstruct;
-import org.example.gmup.port.outbound.file.SaveFileStreamPort;
+import org.example.gmup.core.domain.FileMetaData;
+import org.example.gmup.core.domain.exception.FIleNotExistsException;
+import org.example.gmup.port.outbound.file.GetFilePresignedUploadUrlPort;
+import org.example.gmup.port.outbound.file.SaveFileMetaDataPort;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 
 @Component
-public class MinioSaver implements SaveFileStreamPort {
+public class MinioSaver implements GetFilePresignedUploadUrlPort{
 
     private MinioClient minioClient;
     private static String bucketName = "mybucket";
@@ -32,20 +37,19 @@ public class MinioSaver implements SaveFileStreamPort {
     }
 
     @Override
-    public String saveFileStream(String filename, Long userId, InputStream fileStream) {
-        String objectName = userId+"/"+filename;
+    public String getFileUpUrl(FileMetaData fileMetaData) {
         try {
-            minioClient.putObject(
-                    PutObjectArgs.builder().
-                    stream(fileStream,-1, 10485760).
-                    bucket(bucketName).object(objectName).
-                    build());
-            return objectName;
-        }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        return null;
+            return minioClient.getPresignedObjectUrl(
+                    GetPresignedObjectUrlArgs.
+                            builder().
+                            object(fileMetaData.getPath()).
+                            bucket(bucketName).expiry(10, TimeUnit.MINUTES).
+                            method(Method.PUT).
+                            build());
 
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new FIleNotExistsException("file with path " + fileMetaData.getPath() + " not found!//from GetFileStreamMinioAdapter");
+        }
     }
 }

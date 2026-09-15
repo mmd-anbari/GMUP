@@ -2,6 +2,7 @@ package org.example.gmup.adapter.inbound;
 
 
 import lombok.RequiredArgsConstructor;
+import org.example.gmup.adapter.inbound.dto.file.FileMetaDataUploadDto;
 import org.example.gmup.adapter.inbound.dto.file.ProfileFileMetaData;
 import org.example.gmup.adapter.inbound.dto.user.UserProfileMenu;
 import org.example.gmup.adapter.outbound.security.UserSecurity;
@@ -54,29 +55,24 @@ public class DashboardManagementAdapter {
 
     }
 
-    @PostMapping(value = "/files", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void uploadFile(@RequestParam("file") MultipartFile fileToUpload,
-                           @RequestParam boolean isPublic,
-                           @RequestParam String fileName) throws IOException {
+    @PostMapping(value = "/files")
+    public String uploadFile(@RequestBody FileMetaDataUploadDto fileMetaDataUploadDto,
+                             @RequestParam boolean isPublic,
+                             @RequestParam String fileName) throws IOException {
 
         FileUploadCommand fileUploadCommand = new FileUploadCommand(
-                fileToUpload.getOriginalFilename(),
+                fileMetaDataUploadDto.originalFilename(),
                 fileName,
-                fileToUpload.getContentType(),
-                fileToUpload.getInputStream(),
+                fileMetaDataUploadDto.contentType(),
                 isPublic,
-                fileToUpload.getSize()
+                fileMetaDataUploadDto.size()
         );
 
         UserSecurity userSecurity = (UserSecurity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         long userId = userSecurity.getId();
 
-        boolean b = uploadFileUC.uploadFile(fileUploadCommand, userId);
-        if (b)
-            System.out.println("Upload file successful");
-        else {
-            System.out.println("Upload file failed");
-        }
+        return uploadFileUC.uploadFile(fileUploadCommand, userId);
+
 
     }
 
@@ -96,7 +92,7 @@ public class DashboardManagementAdapter {
 
     @GetMapping("/files/token")
     public String getToken(@RequestParam String shortCode) {
-        return privateGetFileUC.getFileToken(shortCode);
+        return privateGetFileUC.getFileTokenPrivate(shortCode);
     }
 
 }

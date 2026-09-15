@@ -2,19 +2,12 @@ package org.example.gmup.core.service.file;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import org.example.gmup.core.domain.File;
+import org.example.gmup.core.domain.exception.DuplicatedFileNameException;
 import org.example.gmup.core.domain.FileMetaData;
-import org.example.gmup.core.domain.User;
+import org.example.gmup.core.domain.exception.NotEnoughUploadSpaceException;
 import org.example.gmup.core.dto.FileUploadCommand;
 import org.example.gmup.port.inbound.file.UploadFileUC;
-import org.example.gmup.port.outbound.file.CheckFileValidationsPort;
-import org.example.gmup.port.outbound.file.SaveFileMetaDataPort;
-import org.example.gmup.port.outbound.file.SaveFileStreamPort;
-import org.example.gmup.port.outbound.file.UserStorageLimitPort;
-import org.example.gmup.port.outbound.user.UserInformationPort;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
+import org.example.gmup.port.outbound.file.*;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
@@ -22,43 +15,42 @@ import java.time.LocalDateTime;
 public class UploadFileService implements UploadFileUC {
 
     private CheckFileValidationsPort checkFileValidationsPort;
-    private SaveFileStreamPort saveFileStreamPort;
+    private GetFilePresignedUploadUrlPort getFilePresignedUploadUrlPort;
     private SaveFileMetaDataPort saveFileMetaDataPort;
     private UserStorageLimitPort userStorageLimitPort;
 
 
     @Override
-    public boolean uploadFile(FileUploadCommand fileUploadCommand , long userId) {
+    public String uploadFile(FileUploadCommand fileUploadCommand , long userId) {
 
         if(checkFileValidationsPort.isDuplicatedFileName(fileUploadCommand.originalFilename())){
-            return false;
+            throw new DuplicatedFileNameException("Duplicated file name with name :" + fileUploadCommand.originalFilename());
         }
 
         long storageLimit = userStorageLimitPort.getStorageLimit(userId);
         if(storageLimit <= fileUploadCommand.size()){
-            return false;
+            throw new NotEnoughUploadSpaceException("you do not have enough space to upload this file by size :" + fileUploadCommand.size());
         }
 
         long newStorageLimit = storageLimit-fileUploadCommand.size();
 
-        String pathName = saveFileStreamPort.saveFileStream(
-                fileUploadCommand.originalFilename(),
-                userId,
-                fileUploadCommand.inputStream());
+        String pathName = userId+"/"+fileUploadCommand.originalFilename();
+
 
         FileMetaData fileMetaData = extractFileMetaData(fileUploadCommand);
         fileMetaData.setPath(pathName);
         fileMetaData.setCreatedAt(LocalDateTime.now());
 
+        String upleadUrl = getFilePresignedUploadUrlPort.getFileUpUrl(fileMetaData);
 
         saveFileMetaDataPort.saveMetaData(fileMetaData , userId);
         userStorageLimitPort.updateStorageLimit(userId, newStorageLimit);
 
 
-
-
-        return true;
+        return upleadUrl;
     }
+
+
 
     private static FileMetaData extractFileMetaData(FileUploadCommand fileUploadCommand) {
         FileMetaData fileMetaData = new FileMetaData();

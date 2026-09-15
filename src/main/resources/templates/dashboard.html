@@ -641,39 +641,60 @@
                 return;
             }
 
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('fileName', customFileName);
-            formData.append('isPublic', isPublic);
-
             try {
                 const originalBtnText = submitBtn.innerHTML;
-                submitBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> درحال آپلود...";
+                submitBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> درحال دریافت URL آپلود...";
                 submitBtn.disabled = true;
 
-                const response = await fetch('/dashboard/files', {
-                    method: 'POST',
-                    body: formData
+                // ۱. دریافت Presigned URL از سرور
+                const queryParams = new URLSearchParams({
+                    fileName: customFileName,
+                    isPublic: isPublic
                 });
 
-                if (response.ok) {
+                const response = await fetch(`/dashboard/files?${queryParams.toString()}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        originalFilename: file.name, 
+                        contentType: file.type, 
+                        size: file.size 
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorMsg = await response.text();
+                    throw new Error(errorMsg || 'خطا در دریافت URL آپلود');
+                }
+                
+                const uploadUrl = await response.text();
+
+                // ۲. آپلود مستقیم به MinIO با متد PUT
+                submitBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> درحال انتقال فایل به سرور...";
+                const uploadResponse = await fetch(uploadUrl, {
+                    method: 'PUT',
+                    body: file
+                });
+
+                if (uploadResponse.ok) {
                     alert('فایل با موفقیت آپلود شد!');
                     uploadForm.reset();
                     fileNameDisplay.textContent = 'فایلی انتخاب نشده است... برای انتخاب کلیک کنید';
                     fileNameDisplay.style.color = 'inherit';
 
-                    // اگر کاربر قبلا لیست فایل‌ها را باز کرده، جدول را بروزرسانی کن
+                    // بروزرسانی نوار پیشرفت و لیست فایل‌ها
+                    fetchUserProfile(); 
                     if (isFilesLoaded) {
                         fetchFilesList();
                     }
                 } else {
-                    alert('خطا در آپلود فایل!');
+                    throw new Error('خطا در انتقال مستقیم به سرور ذخیره‌سازی');
                 }
             } catch (error) {
-                console.error('Error uploading file:', error);
-                alert('خطای ارتباط با سرور.');
+                console.error('Upload Error:', error);
+                alert(error.message);
             } finally {
-                submitBtn.innerHTML = originalBtnText;
+                submitBtn.innerHTML = "<i class='bx bx-upload'></i> شروع آپلود";
                 submitBtn.disabled = false;
             }
         });
