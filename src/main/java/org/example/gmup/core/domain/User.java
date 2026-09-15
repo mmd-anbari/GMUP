@@ -19,6 +19,13 @@ public class User {
         this.username = username;
         this.password = password;
     }
+    public User(String firstname, String lastname, String username , String password, Long storageLimit) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.username = username;
+        this.password = password;
+        this.storageLimitLeft = storageLimit;
+    }
     private Long id ;
     private String firstname;
     private String lastname;

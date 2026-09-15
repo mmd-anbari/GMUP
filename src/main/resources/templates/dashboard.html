@@ -150,6 +150,36 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
+        .storage-box {
+            margin-top: 5px;
+            width: 100%;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 5px;
+        }
+
+        .progress-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            height: 6px;
+            width: 100%;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe, #00f2fe);
+            width: 0%;
+            transition: width 1.5s ease-in-out;
+            border-radius: 10px;
+        }
+
         .user-profile-badge i {
             font-size: 2.8rem;
             color: #e0e0e0;
@@ -457,11 +487,21 @@
                 <p>امروز چه فایلی می‌خواهید آپلود کنید؟</p>
             </div>
 
-            <div class="user-profile-badge">
-                <i class='bx bx-user-circle'></i>
-                <div class="user-info">
-                    <span class="user-fullname" id="header-fullname">درحال بارگذاری...</span>
-                    <span class="user-username" id="header-username">@username</span>
+            <div class="user-profile-badge" style="flex-direction: column; align-items: flex-start; min-width: 200px;">
+                <div style="display: flex; gap: 15px; align-items: center; width: 100%;">
+                    <i class='bx bx-user-circle'></i>
+                    <div class="user-info">
+                        <span class="user-fullname" id="header-fullname">درحال بارگذاری...</span>
+                        <span class="user-username" id="header-username">@username</span>
+                    </div>
+                </div>
+                <div class="storage-box">
+                    <div class="progress-info">
+                        <span>فضا: <span id="storage-text">0%</span></span>
+                    </div>
+                    <div class="progress-container">
+                        <div id="storage-progress" class="progress-bar"></div>
+                    </div>
                 </div>
             </div>
         </header>
@@ -522,6 +562,7 @@
                             <th>نام فایل</th>
                             <th>نام اصلی (Original)</th>
                             <th>نوع فایل</th>
+                            <th>کد کوتاه</th>
                             <th>دسترسی</th>
                             <th>تعداد دانلود</th>
                             <th>عملیات</th>
@@ -638,7 +679,7 @@
         });
     });
 
-    async function fetchUserProfile() {
+            async function fetchUserProfile() {
         try {
             const res = await fetch('/dashboard/profiles');
             if (res.ok) {
@@ -646,6 +687,29 @@
                 document.getElementById('user-firstname-display').textContent = profile.firstname;
                 document.getElementById('header-fullname').textContent = profile.firstname + ' ' + profile.lastname;
                 document.getElementById('header-username').textContent = '@' + profile.username;
+                
+                // محاسبه مقادیر
+                const TOTAL_STORAGE = 2147483648; // 2GB in bytes
+                const usedBytes = TOTAL_STORAGE - profile.storageLimitLeft;
+                const usedMB = (usedBytes / (1024 * 1024)).toFixed(0);
+                const totalMB = (TOTAL_STORAGE / (1024 * 1024)).toFixed(0);
+                const percent = Math.min(Math.round((usedBytes / TOTAL_STORAGE) * 100), 100);
+                
+                // نمایش متن
+                document.getElementById('storage-text').textContent = `${usedMB} / ${totalMB} MB`;
+                
+                // تنظیم عرض نوار
+                const progressBar = document.getElementById('storage-progress');
+                progressBar.style.width = percent + '%';
+                
+                // تغییر رنگ پویا
+                if (percent < 50) {
+                    progressBar.style.background = 'linear-gradient(90deg, #4facfe, #00f2fe)';
+                } else if (percent < 80) {
+                    progressBar.style.background = '#f1c40f'; // زرد
+                } else {
+                    progressBar.style.background = '#ff758c'; // قرمز
+                }
             }
         } catch (error) {
             console.error('Error fetching profile:', error);
@@ -689,6 +753,7 @@
                             <td>${file.fileName}</td>
                             <td dir="ltr" style="text-align: right;">${file.originalFilename}</td>
                             <td dir="ltr" style="text-align: right;">${file.contentType}</td>
+                            <td dir="ltr" style="text-align: right; font-family: monospace; font-size: 0.85rem;">${file.shortCode}</td>
                             <td><span class="badge ${badgeClass}">${badgeText}</span></td>
                             <td>${file.downloadCount}</td>
                             <td>

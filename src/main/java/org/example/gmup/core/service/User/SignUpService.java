@@ -31,7 +31,7 @@ public class SignUpService implements SignUpUC {
             throw new UserNameAlreadyExistsException("username by "+ command.username()+ " already exists");
         }
         String encodedPassword = passwordEncoderPort.encode(command.password());
-        User user = new User(command.firstname() , command.lastname(), command.username(),encodedPassword);
+        User user = new User(command.firstname() , command.lastname(), command.username(),encodedPassword , command.storageLimitLeft());
         userSignUpPort.signUp(user);
     }
 }

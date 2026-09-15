@@ -50,11 +50,11 @@ public class UserRepositoryAdapter implements UserSignUpPort , UserInformationPo
 
     @Override
     public long getStorageLimit(long userId) {
-        return userRepositoryJpa.getUserStorageLimitByUserId(userId);
+        return userRepositoryJpa.getUserStorageLimitById(userId);
     }
 
     @Override
     public void updateStorageLimit(long userId, long storageLimit) {
-        userRepositoryJpa.updateUserStorageLimitByUserId(userId, storageLimit);
+        userRepositoryJpa.updateUserStorageLimitById(userId, storageLimit);
     }
 }
