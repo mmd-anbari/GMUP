@@ -21,7 +21,7 @@ public interface FileMapper {
     FileMetaData fromMultipartFileToFileMetaData(MultipartFile multipartFile);
     @Mapping(target = "." , source = "fileMetadata")
     FileMenu fromFileWithDownloadTokenToFileMenu(FileDownloadWithToken fileDownloadWithToken);
-
+    @Mapping(target = "isPublic" , source = "public")
     ProfileFileMetaData fromFileMetaToProfileFileMetaData(FileMetaData fileMetaData);
 
 

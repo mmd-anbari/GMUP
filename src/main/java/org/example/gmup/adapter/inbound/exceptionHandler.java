@@ -33,4 +33,9 @@ public class exceptionHandler {
     public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(FileDownloadAccessDeniedException.class)
+    public ResponseEntity<String> handleFileDownloadAccessDeniedException(FileDownloadAccessDeniedException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+    }
 }

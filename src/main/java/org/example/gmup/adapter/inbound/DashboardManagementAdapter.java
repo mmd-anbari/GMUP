@@ -58,7 +58,7 @@ public class DashboardManagementAdapter {
     @PostMapping(value = "/files")
     public String uploadFile(@RequestBody FileMetaDataUploadDto fileMetaDataUploadDto,
                              @RequestParam boolean isPublic,
-                             @RequestParam String fileName) throws IOException {
+                             @RequestParam String fileName){
 
         FileUploadCommand fileUploadCommand = new FileUploadCommand(
                 fileMetaDataUploadDto.originalFilename(),
@@ -85,6 +85,7 @@ public class DashboardManagementAdapter {
 
         FileMetaData fileMetaData = privateGetFileUC.getFileMetaData(fileName, userId);
         ProfileFileMetaData profileFileMetaData = fileMapper.fromFileMetaToProfileFileMetaData(fileMetaData);
+
         return new ResponseEntity<>(profileFileMetaData, HttpStatus.OK);
 
 
