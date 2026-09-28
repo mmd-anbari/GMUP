@@ -95,6 +95,39 @@
         .toast.error { background: linear-gradient(135deg, #ef4444, #dc2626); }
         @keyframes slideIn { 0% { transform: translateX(-100%); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
         @keyframes fadeOut { 0% { opacity: 1; } 100% { opacity: 0; } }
+
+        /* =========================================
+           تنظیمات واکنش‌گرا برای موبایل (Mobile Responsive)
+        ========================================= */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+                overflow-y: auto;
+            }
+
+            .back-btn {
+                top: 1rem;
+                right: 1rem;
+                font-size: 0.95rem;
+                padding: 0.5rem 1rem;
+            }
+
+            .auth-container {
+                max-width: 100%;
+                margin-top: 3rem;
+                min-height: auto;
+            }
+
+            .form-panel {
+                padding: 1.5rem;
+            }
+
+            #toast-container {
+                bottom: 15px;
+                left: 15px;
+                right: 15px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -259,9 +292,9 @@
                 body: formData.toString()
             });
 
-            if (res.ok) {
+            if (res.ok && !res.url.includes('error')) {
                 showToast('ورود موفقیت‌آمیز! در حال انتقال...', 'success');
-                // ریدایرکت به صفحه داشبورد کاربری (که در قدم بعدی می‌سازیم)
+                // ریدایرکت به صفحه داشبورد کاربری
                 setTimeout(() => window.location.href = '/dashboard', 1000);
             } else {
                 showToast('نام کاربری یا رمز عبور اشتباه است.', 'error');

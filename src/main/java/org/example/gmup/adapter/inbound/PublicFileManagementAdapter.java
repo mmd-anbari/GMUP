@@ -34,7 +34,7 @@ public class PublicFileManagementAdapter {
 
     @GetMapping("/files/token")
     public String getToken(@RequestParam String shortCode) {
-        return publicGetFileUC.getFileToken(shortCode);
+        return publicGetFileUC.getFileTokenPublic(shortCode);
     }
 
 

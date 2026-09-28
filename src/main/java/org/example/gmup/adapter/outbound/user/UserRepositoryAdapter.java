@@ -5,6 +5,7 @@ import org.example.gmup.adapter.outbound.entity.UserEntity;
 import org.example.gmup.adapter.outbound.jpa.UserRepositoryJpa;
 import org.example.gmup.core.domain.User;
 import org.example.gmup.mapper.UserMapper;
+import org.example.gmup.port.outbound.file.UserStorageLimitPort;
 import org.example.gmup.port.outbound.user.UserInformationPort;
 import org.example.gmup.port.outbound.user.UserSignUpPort;
 import org.springframework.stereotype.Component;
@@ -13,7 +14,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class UserRepositoryAdapter implements UserSignUpPort , UserInformationPort  {
+public class UserRepositoryAdapter implements UserSignUpPort , UserInformationPort , UserStorageLimitPort {
 
     private final UserRepositoryJpa userRepositoryJpa;
     private final UserMapper userMapper;
@@ -47,4 +48,13 @@ public class UserRepositoryAdapter implements UserSignUpPort , UserInformationPo
         return userRepositoryJpa.findUserEntityByUsername(username);
     }
 
+    @Override
+    public long getStorageLimit(long userId) {
+        return userRepositoryJpa.getUserStorageLimitById(userId);
+    }
+
+    @Override
+    public void updateStorageLimit(long userId, long storageLimit) {
+        userRepositoryJpa.updateUserStorageLimitById(userId, storageLimit);
+    }
 }

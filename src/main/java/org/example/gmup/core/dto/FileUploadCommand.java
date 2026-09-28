@@ -10,8 +10,8 @@ public record FileUploadCommand(
         String originalFilename,
         String fileName,
         String contentType,
-        InputStream inputStream,
-        boolean isPublic
+        boolean isPublic,
+        long size
 
 ) {
 

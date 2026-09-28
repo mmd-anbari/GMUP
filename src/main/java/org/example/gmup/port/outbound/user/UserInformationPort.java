@@ -12,4 +12,6 @@ public interface UserInformationPort {
 
     boolean userNameExists(String userName);
 
+
+
 }

@@ -20,6 +20,7 @@ public class UserEntity {
     private String lastname;
     private String username;
     private String password;
+    private long storageLimitLeft;
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

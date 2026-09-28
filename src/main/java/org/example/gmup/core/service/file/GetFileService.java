@@ -21,7 +21,7 @@ import java.util.Optional;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetFileService implements PrivateGetFileUC , PublicGetFileUC {
+public class GetFileService implements PrivateGetFileUC, PublicGetFileUC {
 
 
     private GetFileMetaDataPort getFileMetaDataPort;
@@ -30,7 +30,7 @@ public class GetFileService implements PrivateGetFileUC , PublicGetFileUC {
 
 
     @Override
-    public FileMetaData getFileMetaData(String fileName ,long userId) {
+    public FileMetaData getFileMetaData(String fileName, long userId) {
 
         Optional<FileMetaData> fileMetaData = getFileMetaDataPort.getFileMetaData(fileName, userId);
         if (fileMetaData.isEmpty())
@@ -41,7 +41,7 @@ public class GetFileService implements PrivateGetFileUC , PublicGetFileUC {
     }
 
     @Override
-    public List<FileMetaData> getAllFileMetaData(long userId){
+    public List<FileMetaData> getAllFileMetaData(long userId) {
         return getFileMetaDataPort.getFileMetaDataList(userId);
     }
 
@@ -49,28 +49,39 @@ public class GetFileService implements PrivateGetFileUC , PublicGetFileUC {
     @Override
     public FileMetaData getFileMetaData(String shortCode) {
         Optional<FileMetaData> fileMetaData = getFileMetaDataPort.getFileMetaData(shortCode);
-        if(fileMetaData.isEmpty())
+        if (fileMetaData.isEmpty())
             throw new FIleNotExistsException("file meta data not found by shortCode : " + shortCode + "//from GetFileService/getFileMetaDataWithToken ");
 
-        if(!fileMetaData.get().isPublic())
+        if (!fileMetaData.get().isPublic())
             throw new FileDownloadAccessDeniedException("this file is not public for download with shortCode : " + shortCode + "//from GetFileService/getFileMetaDataWithToken ");
-        updateFileMetaDataAfterDownloadPort.increaseDownloadCount(fileMetaData.get());
+
         return fileMetaData.get();
 
     }
 
     //TODO i can add redis here for caching the FileMetas with key of short code !
     @Override
-    public String getFileToken(String shortCode) {
+    public String getFileTokenPublic(String shortCode) {
         Optional<FileMetaData> fileMetaData = getFileMetaDataPort.getFileMetaData(shortCode);
-        if(fileMetaData.isEmpty())
+        if (fileMetaData.isEmpty())
             throw new FIleNotExistsException("file meta data not found by shortCode : " + shortCode + "//from GetFileService/getFileMetaDataWithToken ");
 
-        if(!fileMetaData.get().isPublic())
+        if (!fileMetaData.get().isPublic())
             throw new FileDownloadAccessDeniedException("this file is not public for download with shortCode : " + shortCode + "//from GetFileService/getFileMetaDataWithToken ");
+        updateFileMetaDataAfterDownloadPort.increaseDownloadCount(fileMetaData.get());
         return getFilePresidedUrlPort.getFilePresidedUrl(fileMetaData.get());
 
     }
 
+    @Override
+    public String getFileTokenPrivate(String shortCode) {
+        Optional<FileMetaData> fileMetaData = getFileMetaDataPort.getFileMetaData(shortCode);
+        if (fileMetaData.isEmpty())
+            throw new FIleNotExistsException("file meta data not found by shortCode : " + shortCode + "//from GetFileService/getFileMetaDataWithToken ");
+
+        updateFileMetaDataAfterDownloadPort.increaseDownloadCount(fileMetaData.get());
+        return getFilePresidedUrlPort.getFilePresidedUrl(fileMetaData.get());
+
+    }
 
 }

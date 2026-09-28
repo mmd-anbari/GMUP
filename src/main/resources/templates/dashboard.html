@@ -150,6 +150,36 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
+        .storage-box {
+            margin-top: 5px;
+            width: 100%;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 5px;
+        }
+
+        .progress-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            height: 6px;
+            width: 100%;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe, #00f2fe);
+            width: 0%;
+            transition: width 1.5s ease-in-out;
+            border-radius: 10px;
+        }
+
         .user-profile-badge i {
             font-size: 2.8rem;
             color: #e0e0e0;
@@ -407,6 +437,203 @@
         }
         .btn-download:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4); }
 
+        /* دکمه‌های عملیات گروهی شیک */
+        .action-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .action-btn.preview-btn { color: #00f2fe; }
+        .action-btn.preview-btn:hover { background: rgba(0, 242, 254, 0.2); border-color: #00f2fe; }
+
+        .action-btn.token-btn { color: #a29bfe; }
+        .action-btn.token-btn:hover { background: rgba(162, 155, 254, 0.2); border-color: #a29bfe; }
+
+        .action-btn.info-btn { color: #ffeaa7; }
+        .action-btn.info-btn:hover { background: rgba(255, 234, 167, 0.2); border-color: #ffeaa7; }
+
+        /* سوئیچ شیک برای حالت عمومی/خصوصی */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(255, 255, 255, 0.15);
+            transition: .4s;
+            border-radius: 34px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px; width: 16px;
+            left: 4px; bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #4facfe;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        /* استایل مودال پیش‌نمایش بزرگ و ریسپانسیو */
+        .preview-modal-content {
+            max-width: 850px;
+            width: 95%;
+            padding: 25px;
+        }
+
+        .preview-body-container {
+            margin-top: 15px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px;
+            max-height: 550px;
+            position: relative;
+        }
+
+        .preview-media {
+            max-width: 100%;
+            max-height: 500px;
+            border-radius: 8px;
+            display: block;
+        }
+
+        .preview-iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+            border-radius: 8px;
+            background: white;
+        }
+
+        /* کارت برای فایل‌های غیرقابل پیش‌نمایش */
+        .unsupported-preview-card {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .unsupported-preview-card i {
+            font-size: 4rem;
+            color: #ff758c;
+            margin-bottom: 15px;
+        }
+
+        /* =========================================
+           تنظیمات واکنش‌گرا برای موبایل (Mobile Responsive)
+        ========================================= */
+        @media (max-width: 768px) {
+            body {
+                overflow-y: auto;
+            }
+
+            .dashboard-container {
+                flex-direction: column;
+                height: auto;
+                min-height: 100vh;
+                padding: 10px;
+                gap: 15px;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 15px 20px;
+            }
+
+            .logo-section {
+                margin-bottom: 20px;
+                justify-content: center;
+            }
+
+            .nav-links {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+            }
+
+            .nav-links a {
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+
+            .logout-item {
+                margin-top: 0;
+            }
+
+            .top-header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px 20px;
+                text-align: center;
+            }
+
+            .user-profile-badge {
+                width: 100%;
+            }
+
+            .upload-section, .files-section {
+                padding: 15px;
+            }
+
+            .upload-form {
+                max-width: 100%;
+            }
+
+            .preview-modal-content {
+                padding: 15px;
+                width: 98%;
+            }
+
+            .preview-body-container {
+                min-height: 200px;
+                max-height: 400px;
+            }
+
+            .preview-iframe {
+                height: 350px;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -457,11 +684,21 @@
                 <p>امروز چه فایلی می‌خواهید آپلود کنید؟</p>
             </div>
 
-            <div class="user-profile-badge">
-                <i class='bx bx-user-circle'></i>
-                <div class="user-info">
-                    <span class="user-fullname" id="header-fullname">درحال بارگذاری...</span>
-                    <span class="user-username" id="header-username">@username</span>
+            <div class="user-profile-badge" style="flex-direction: column; align-items: flex-start; min-width: 200px;">
+                <div style="display: flex; gap: 15px; align-items: center; width: 100%;">
+                    <i class='bx bx-user-circle'></i>
+                    <div class="user-info">
+                        <span class="user-fullname" id="header-fullname">درحال بارگذاری...</span>
+                        <span class="user-username" id="header-username">@username</span>
+                    </div>
+                </div>
+                <div class="storage-box">
+                    <div class="progress-info">
+                        <span>فضا: <span id="storage-text">0%</span></span>
+                    </div>
+                    <div class="progress-container">
+                        <div id="storage-progress" class="progress-bar"></div>
+                    </div>
                 </div>
             </div>
         </header>
@@ -489,9 +726,12 @@
                         </label>
                     </div>
 
-                    <div class="form-group checkbox-group">
-                        <input type="checkbox" id="isPublic" name="isPublic" class="custom-checkbox">
-                        <label for="isPublic">این فایل عمومی باشد؟</label>
+                    <div class="form-group checkbox-group" style="flex-direction: row; align-items: center; gap: 15px;">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="isPublic" name="isPublic">
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span style="font-weight: 500;">این فایل عمومی باشد؟</span>
                     </div>
 
                     <button type="submit" class="btn-submit">
@@ -522,6 +762,7 @@
                             <th>نام فایل</th>
                             <th>نام اصلی (Original)</th>
                             <th>نوع فایل</th>
+                            <th>کد کوتاه</th>
                             <th>دسترسی</th>
                             <th>تعداد دانلود</th>
                             <th>عملیات</th>
@@ -529,7 +770,7 @@
                         </thead>
                         <tbody id="files-tbody">
                         <tr>
-                            <td colspan="6" style="text-align: center; color: #aaa;">برای مشاهده لیست فایل‌ها، روی دکمه «نمایش فایل‌های من» کلیک کنید.</td>
+                            <td colspan="7" style="text-align: center; color: #aaa;">برای مشاهده لیست فایل‌ها، روی دکمه «نمایش فایل‌های من» کلیک کنید.</td>
                         </tr>
                         </tbody>
                     </table>
@@ -554,6 +795,20 @@
             <button class="btn-download" onclick="downloadWithToken()">
                 <i class='bx bx-download'></i> دانلود فایل
             </button>
+        </div>
+    </div>
+</div>
+
+<!-- مودال پیش‌نمایش فایل آنلاین -->
+<div id="previewModal" class="modal-overlay">
+    <div class="modal-content preview-modal-content glass-panel">
+        <span class="close-modal" onclick="closePreviewModal()">&times;</span>
+        <h4><i class='bx bx-show-alt'></i> پیش‌نمایش: <span id="preview-file-name" style="color: #4facfe; font-size: 1rem; font-weight: bold;">نام فایل</span></h4>
+        <div class="preview-body-container" id="previewBody">
+            <div id="preview-spinner" style="text-align: center;">
+                <i class='bx bx-loader-alt bx-spin' style="font-size: 3rem; color: #4facfe;"></i>
+                <p style="margin-top: 10px; color: rgba(255,255,255,0.7);">درحال بارگذاری فایل...</p>
+            </div>
         </div>
     </div>
 </div>
@@ -600,45 +855,66 @@
                 return;
             }
 
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('fileName', customFileName);
-            formData.append('isPublic', isPublic);
-
             try {
                 const originalBtnText = submitBtn.innerHTML;
-                submitBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> درحال آپلود...";
+                submitBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> درحال دریافت URL آپلود...";
                 submitBtn.disabled = true;
 
-                const response = await fetch('/dashboard/files', {
-                    method: 'POST',
-                    body: formData
+                // ۱. دریافت Presigned URL از سرور
+                const queryParams = new URLSearchParams({
+                    fileName: customFileName,
+                    isPublic: isPublic
                 });
 
-                if (response.ok) {
+                const response = await fetch(`/dashboard/files?${queryParams.toString()}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        originalFilename: file.name, 
+                        contentType: file.type, 
+                        size: file.size 
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorMsg = await response.text();
+                    throw new Error(errorMsg || 'خطا در دریافت URL آپلود');
+                }
+                
+                const uploadUrl = await response.text();
+
+                // ۲. آپلود مستقیم به MinIO با متد PUT
+                submitBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> درحال انتقال فایل به سرور...";
+                const uploadResponse = await fetch(uploadUrl, {
+                    method: 'PUT',
+                    body: file
+                });
+
+                if (uploadResponse.ok) {
                     alert('فایل با موفقیت آپلود شد!');
                     uploadForm.reset();
                     fileNameDisplay.textContent = 'فایلی انتخاب نشده است... برای انتخاب کلیک کنید';
                     fileNameDisplay.style.color = 'inherit';
 
-                    // اگر کاربر قبلا لیست فایل‌ها را باز کرده، جدول را بروزرسانی کن
+                    // بروزرسانی نوار پیشرفت و لیست فایل‌ها
+                    fetchUserProfile(); 
                     if (isFilesLoaded) {
                         fetchFilesList();
                     }
                 } else {
-                    alert('خطا در آپلود فایل!');
+                    throw new Error('خطا در انتقال مستقیم به سرور ذخیره‌سازی');
                 }
             } catch (error) {
-                console.error('Error uploading file:', error);
-                alert('خطای ارتباط با سرور.');
+                console.error('Upload Error:', error);
+                alert(error.message);
             } finally {
-                submitBtn.innerHTML = originalBtnText;
+                submitBtn.innerHTML = "<i class='bx bx-upload'></i> شروع آپلود";
                 submitBtn.disabled = false;
             }
         });
     });
 
-    async function fetchUserProfile() {
+            async function fetchUserProfile() {
         try {
             const res = await fetch('/dashboard/profiles');
             if (res.ok) {
@@ -646,6 +922,29 @@
                 document.getElementById('user-firstname-display').textContent = profile.firstname;
                 document.getElementById('header-fullname').textContent = profile.firstname + ' ' + profile.lastname;
                 document.getElementById('header-username').textContent = '@' + profile.username;
+                
+                // محاسبه مقادیر
+                const TOTAL_STORAGE = 2147483648; // 2GB in bytes
+                const usedBytes = TOTAL_STORAGE - profile.storageLimitLeft;
+                const usedMB = (usedBytes / (1024 * 1024)).toFixed(0);
+                const totalMB = (TOTAL_STORAGE / (1024 * 1024)).toFixed(0);
+                const percent = Math.min(Math.round((usedBytes / TOTAL_STORAGE) * 100), 100);
+                
+                // نمایش متن
+                document.getElementById('storage-text').textContent = `${usedMB} / ${totalMB} MB`;
+                
+                // تنظیم عرض نوار
+                const progressBar = document.getElementById('storage-progress');
+                progressBar.style.width = percent + '%';
+                
+                // تغییر رنگ پویا
+                if (percent < 50) {
+                    progressBar.style.background = 'linear-gradient(90deg, #4facfe, #00f2fe)';
+                } else if (percent < 80) {
+                    progressBar.style.background = '#f1c40f'; // زرد
+                } else {
+                    progressBar.style.background = '#ff758c'; // قرمز
+                }
             }
         } catch (error) {
             console.error('Error fetching profile:', error);
@@ -676,7 +975,7 @@
                 }
 
                 if (files.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">هنوز فایلی آپلود نکرده‌اید.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">هنوز فایلی آپلود نکرده‌اید.</td></tr>';
                     return;
                 }
 
@@ -689,21 +988,27 @@
                             <td>${file.fileName}</td>
                             <td dir="ltr" style="text-align: right;">${file.originalFilename}</td>
                             <td dir="ltr" style="text-align: right;">${file.contentType}</td>
+                            <td dir="ltr" style="text-align: right; font-family: monospace; font-size: 0.85rem;">${file.shortCode}</td>
                             <td><span class="badge ${badgeClass}">${badgeText}</span></td>
                             <td>${file.downloadCount}</td>
                             <td>
-                                <button class="action-btn" onclick="showTokenModal('${file.shortCode}')" title="دریافت توکن / لینک">
-                                    <i class='bx bx-key'></i>
-                                </button>
-                                <button class="action-btn" onclick="showInfo('${file.fileName}')" title="اطلاعات تکمیلی">
-                                    <i class='bx bx-info-circle'></i>
-                                </button>
+                                <div class="action-group">
+                                    <button class="action-btn preview-btn" onclick="openPreviewModal('${file.shortCode}', '${file.contentType}', '${file.fileName}')" title="پیش‌نمایش آنلاین">
+                                        <i class='bx bx-show'></i>
+                                    </button>
+                                    <button class="action-btn token-btn" onclick="showTokenModal('${file.shortCode}')" title="دریافت لینک مستقیم">
+                                        <i class='bx bx-key'></i>
+                                    </button>
+                                    <button class="action-btn info-btn" onclick="showInfo('${file.fileName}')" title="اطلاعات تکمیلی">
+                                        <i class='bx bx-info-circle'></i>
+                                    </button>
+                                </div>
                             </td>
                         `;
                     tbody.appendChild(tr);
                 });
             } else {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #ff4444;">خطا در دریافت لیست فایل‌ها</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #ff4444;">خطا در دریافت لیست فایل‌ها</td></tr>';
                 // اگر خطا داد دکمه رو برمیگردونیم به حالت اول
                 if (loadBtn) {
                     loadBtn.innerHTML = "<i class='bx bx-cloud-download'></i> تلاش مجدد";
@@ -712,7 +1017,7 @@
             }
         } catch (error) {
             console.error('Error fetching files:', error);
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #ff4444;">خطای ارتباط با سرور</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #ff4444;">خطای ارتباط با سرور</td></tr>';
             if (loadBtn) {
                 loadBtn.innerHTML = "<i class='bx bx-cloud-download'></i> تلاش مجدد";
                 loadBtn.disabled = false;
@@ -747,8 +1052,12 @@
 
     window.onclick = function(event) {
         const modal = document.getElementById('tokenModal');
+        const previewModal = document.getElementById('previewModal');
         if (event.target === modal) {
             closeModal();
+        }
+        if (event.target === previewModal) {
+            closePreviewModal();
         }
     }
 
@@ -789,6 +1098,90 @@
         } catch (e) {
             console.error('Error:', e);
         }
+    }
+
+    let currentPreviewUrl = '';
+
+    async function openPreviewModal(shortCode, contentType, fileName) {
+        const modal = document.getElementById('previewModal');
+        const previewBody = document.getElementById('previewBody');
+        const fileNameDisplay = document.getElementById('preview-file-name');
+        
+        fileNameDisplay.textContent = fileName;
+        
+        // ۱. نمایش مودال در حالت لودینگ
+        previewBody.innerHTML = `
+            <div style="text-align: center;">
+                <i class='bx bx-loader-alt bx-spin' style="font-size: 3rem; color: #4facfe;"></i>
+                <p style="margin-top: 10px; color: rgba(255,255,255,0.7);">دریافت لینک امن و بارگذاری محتوا...</p>
+            </div>
+        `;
+        modal.classList.add('active');
+        
+        try {
+            // ۲. دریافت توکن مستقیم از سرور
+            const res = await fetch('/dashboard/files/token?shortCode=' + shortCode);
+            if (!res.ok) throw new Error('خطا در بارگذاری فایل');
+            
+            const previewUrl = await res.text();
+            currentPreviewUrl = previewUrl;
+            
+            // ۳. بررسی نوع فرمت و رندر مناسب
+            if (contentType.startsWith('image/')) {
+                previewBody.innerHTML = `<img src="${previewUrl}" class="preview-media" alt="${fileName}" />`;
+            } 
+            else if (contentType.startsWith('video/')) {
+                previewBody.innerHTML = `
+                    <video controls autoplay class="preview-media" style="width: 100%;">
+                        <source src="${previewUrl}" type="${contentType}">
+                        مرورگر شما از پیش‌نمایش ویدیو پشتیبانی نمی‌کند.
+                    </video>
+                `;
+            } 
+            else if (contentType.startsWith('audio/')) {
+                previewBody.innerHTML = `
+                    <div style="text-align: center; padding: 50px; width: 100%;">
+                        <i class='bx bx-music' style="font-size: 4rem; color: #4facfe; margin-bottom: 15px; display: block;"></i>
+                        <audio controls autoplay style="width: 100%; max-width: 400px;">
+                            <source src="${previewUrl}" type="${contentType}">
+                        </audio>
+                    </div>
+                `;
+            } 
+            else if (contentType === 'application/pdf') {
+                previewBody.innerHTML = `<iframe src="${previewUrl}" class="preview-iframe"></iframe>`;
+            } 
+            else {
+                // فایل‌های غیرقابل پیش‌نمایش (ZIP, EXE و...)
+                previewBody.innerHTML = `
+                    <div class="unsupported-preview-card">
+                        <i class='bx bx-file' style="font-size: 4rem; color: #ff758c; margin-bottom: 15px; display: block;"></i>
+                        <h5>پیش‌نمایش برای این فرمت (${contentType}) پشتیبانی نمی‌شود</h5>
+                        <p style="margin-top: 10px;">می‌توانید فایل را مستقیماً دانلود نمایید.</p>
+                        <a href="${previewUrl}" target="_blank" class="btn-submit" style="display: inline-flex; width: auto; margin-top: 15px; padding: 10px 25px; text-decoration: none;">
+                            <i class='bx bx-cloud-download'></i> دانلود مستقیم فایل
+                        </a>
+                    </div>
+                `;
+            }
+        } catch (e) {
+            console.error('Preview error:', e);
+            previewBody.innerHTML = `
+                <div style="text-align: center; color: #ff758c; padding: 20px;">
+                    <i class='bx bx-error-circle' style="font-size: 3rem; margin-bottom: 10px;"></i>
+                    <p>خطا در برقراری ارتباط با سرور و بارگذاری فایل.</p>
+                </div>
+            `;
+        }
+    }
+
+    function closePreviewModal() {
+        const modal = document.getElementById('previewModal');
+        const previewBody = document.getElementById('previewBody');
+        
+        // تخلیه کامل مودال برای متوقف کردن پخش ویدیو/صوت در پس‌زمینه
+        previewBody.innerHTML = '';
+        modal.classList.remove('active');
     }
 </script>
 </body>

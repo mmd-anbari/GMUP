@@ -6,5 +6,5 @@ public interface PublicGetFileUC {
 
     FileMetaData getFileMetaData(String shortCode);
 
-    String getFileToken(String shortCode);
+    String getFileTokenPublic(String shortCode);
 }
